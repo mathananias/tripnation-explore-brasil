@@ -14,7 +14,159 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      community_posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          likes_count: number | null
+          location: string | null
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          location?: string | null
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          location?: string | null
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      document_uploads: {
+        Row: {
+          created_at: string
+          document_type: string
+          file_url: string
+          id: string
+          user_id: string
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          document_type: string
+          file_url: string
+          id?: string
+          user_id: string
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          file_url?: string
+          id?: string
+          user_id?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          engagement_points: number | null
+          favorite_sports: string[] | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          engagement_points?: number | null
+          favorite_sports?: string[] | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          engagement_points?: number | null
+          favorite_sports?: string[] | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          destination: string
+          id: string
+          image_url: string | null
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          destination: string
+          id?: string
+          image_url?: string | null
+          rating: number
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          destination?: string
+          id?: string
+          image_url?: string | null
+          rating?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trips: {
+        Row: {
+          completed: boolean | null
+          completed_date: string | null
+          created_at: string
+          destination: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_date?: string | null
+          created_at?: string
+          destination: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_date?: string | null
+          created_at?: string
+          destination?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
