@@ -21,17 +21,17 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#destinos" className="text-foreground hover:text-primary transition-colors font-medium">
-              Destinos
+            <a href="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
+              Comunidade
             </a>
-            <a href="#experiencias" className="text-foreground hover:text-primary transition-colors font-medium">
-              Experiências
+            <a href="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
+              Avaliações
             </a>
-            <a href="#blog" className="text-foreground hover:text-primary transition-colors font-medium">
-              Blog
+            <a href="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
+              Chat
             </a>
-            <a href="#sobre" className="text-foreground hover:text-primary transition-colors font-medium">
-              Sobre
+            <a href="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
+              Perfil
             </a>
           </nav>
 
@@ -40,8 +40,8 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Search className="w-5 h-5" />
             </Button>
-            <Button className="hidden md:flex bg-gradient-brasil hover:opacity-90 transition-opacity">
-              Planeje sua Viagem
+            <Button asChild className="hidden md:flex bg-gradient-brasil hover:opacity-90 transition-opacity">
+              <a href="/auth">Entrar / Cadastrar</a>
             </Button>
             
             {/* Mobile Menu Button */}
