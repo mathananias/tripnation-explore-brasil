@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ChatModal from "@/components/ChatModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +50,7 @@ const packagedTrips = [
 
 const Viagens = () => {
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [userTrips, setUserTrips] = useState([
     {
       id: 1,
@@ -329,7 +331,10 @@ const Viagens = () => {
                 Nossa equipe pode criar um pacote personalizado especialmente para você. 
                 Entre em contato e monte a viagem dos seus sonhos!
               </p>
-              <Button className="bg-gradient-sunset hover:opacity-90 transition-opacity text-white">
+              <Button 
+                className="bg-gradient-sunset hover:opacity-90 transition-opacity text-white"
+                onClick={() => setIsChatOpen(true)}
+              >
                 Solicitar Pacote Personalizado
               </Button>
             </Card>
@@ -337,6 +342,8 @@ const Viagens = () => {
         </div>
       </main>
 
+      <ChatModal isOpen={isChatOpen} onOpenChange={setIsChatOpen} />
+      
       <Footer />
     </div>
   );

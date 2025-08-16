@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroImage from "@/assets/hero-destino-secreto.jpg";
+import ChatModal from "@/components/ChatModal";
 
 const Hero = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -71,6 +75,8 @@ const Hero = () => {
           </div>
         </div>
       </div>
+      
+      <ChatModal isOpen={isChatOpen} onOpenChange={setIsChatOpen} />
     </section>
   );
 };

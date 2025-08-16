@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Waves, Mountain, Bike, Camera, TreePine, Compass } from "lucide-react";
+import ChatModal from "@/components/ChatModal";
 const experiencias = [{
   icon: Waves,
   nome: "Surf",
@@ -45,6 +47,8 @@ const experiencias = [{
   bgColor: "bg-secondary/10"
 }];
 const ExperienciasSection = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  
   return <section id="experiencias" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
@@ -81,7 +85,11 @@ const ExperienciasSection = () => {
             Nossos especialistas criam o roteiro perfeito baseado no seu perfil e preferências
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 transition-colors">
+            <Button 
+              size="lg" 
+              className="bg-white text-primary hover:bg-white/90 transition-colors"
+              onClick={() => setIsChatOpen(true)}
+            >
               Falar com Especialista
             </Button>
             <Button variant="outline" size="lg" className="border-white bg-slate-950 hover:bg-slate-800 text-slate-50">
@@ -90,6 +98,8 @@ const ExperienciasSection = () => {
           </div>
         </div>
       </div>
+      
+      <ChatModal isOpen={isChatOpen} onOpenChange={setIsChatOpen} />
     </section>;
 };
 export default ExperienciasSection;
