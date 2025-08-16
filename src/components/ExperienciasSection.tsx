@@ -1,61 +1,51 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Waves, Mountain, Bike, Camera, TreePine, Compass } from "lucide-react";
-
-const experiencias = [
-  {
-    icon: Waves,
-    nome: "Surf",
-    descricao: "Ondas perfeitas em praias preservadas",
-    destinos: "12 destinos",
-    color: "text-secondary",
-    bgColor: "bg-secondary/10"
-  },
-  {
-    icon: Mountain,
-    nome: "Trekking",
-    descricao: "Trilhas épicas pela natureza selvagem",
-    destinos: "25 destinos",
-    color: "text-primary",
-    bgColor: "bg-primary/10"
-  },
-  {
-    icon: Bike,
-    nome: "Mountain Bike",
-    descricao: "Aventuras sobre duas rodas",
-    destinos: "18 destinos", 
-    color: "text-accent",
-    bgColor: "bg-accent/10"
-  },
-  {
-    icon: Camera,
-    nome: "Escalada",
-    descricao: "Desafie suas alturas e limites",
-    destinos: "8 destinos",
-    color: "text-yellow",
-    bgColor: "bg-yellow/10"
-  },
-  {
-    icon: TreePine,
-    nome: "Camping",
-    descricao: "Noites sob o céu estrelado",
-    destinos: "15 destinos",
-    color: "text-primary",
-    bgColor: "bg-primary/10"
-  },
-  {
-    icon: Compass,
-    nome: "Aventura Completa",
-    descricao: "Pacotes com múltiplas atividades",
-    destinos: "10 destinos",
-    color: "text-secondary",
-    bgColor: "bg-secondary/10"
-  }
-];
-
+const experiencias = [{
+  icon: Waves,
+  nome: "Surf",
+  descricao: "Ondas perfeitas em praias preservadas",
+  destinos: "12 destinos",
+  color: "text-secondary",
+  bgColor: "bg-secondary/10"
+}, {
+  icon: Mountain,
+  nome: "Trekking",
+  descricao: "Trilhas épicas pela natureza selvagem",
+  destinos: "25 destinos",
+  color: "text-primary",
+  bgColor: "bg-primary/10"
+}, {
+  icon: Bike,
+  nome: "Mountain Bike",
+  descricao: "Aventuras sobre duas rodas",
+  destinos: "18 destinos",
+  color: "text-accent",
+  bgColor: "bg-accent/10"
+}, {
+  icon: Camera,
+  nome: "Escalada",
+  descricao: "Desafie suas alturas e limites",
+  destinos: "8 destinos",
+  color: "text-yellow",
+  bgColor: "bg-yellow/10"
+}, {
+  icon: TreePine,
+  nome: "Camping",
+  descricao: "Noites sob o céu estrelado",
+  destinos: "15 destinos",
+  color: "text-primary",
+  bgColor: "bg-primary/10"
+}, {
+  icon: Compass,
+  nome: "Aventura Completa",
+  descricao: "Pacotes com múltiplas atividades",
+  destinos: "10 destinos",
+  color: "text-secondary",
+  bgColor: "bg-secondary/10"
+}];
 const ExperienciasSection = () => {
-  return (
-    <section id="experiencias" className="py-20">
+  return <section id="experiencias" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -68,9 +58,8 @@ const ExperienciasSection = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {experiencias.map((exp, index) => {
-            const IconComponent = exp.icon;
-            return (
-              <Card key={index} className="group hover:shadow-secondary transition-all duration-300 cursor-pointer border-0 bg-card">
+          const IconComponent = exp.icon;
+          return <Card key={index} className="group hover:shadow-secondary transition-all duration-300 cursor-pointer border-0 bg-card">
                 <CardContent className="p-6 text-center">
                   <div className={`inline-flex p-4 rounded-xl ${exp.bgColor} mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     <IconComponent className={`w-8 h-8 ${exp.color}`} />
@@ -80,9 +69,8 @@ const ExperienciasSection = () => {
                   <p className="text-muted-foreground mb-3">{exp.descricao}</p>
                   <div className="text-sm font-medium text-primary">{exp.destinos}</div>
                 </CardContent>
-              </Card>
-            );
-          })}
+              </Card>;
+        })}
         </div>
 
         <div className="bg-gradient-brasil rounded-2xl p-8 md:p-12 text-center text-white">
@@ -96,14 +84,12 @@ const ExperienciasSection = () => {
             <Button size="lg" className="bg-white text-primary hover:bg-white/90 transition-colors">
               Falar com Especialista
             </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+            <Button variant="outline" size="lg" className="border-white bg-slate-950 hover:bg-slate-800 text-slate-50">
               Quiz: Qual Aventura é Sua Cara?
             </Button>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default ExperienciasSection;
