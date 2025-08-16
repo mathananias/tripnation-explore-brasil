@@ -14,13 +14,16 @@ const Header = () => {
             <div className="bg-gradient-brasil p-2 rounded-lg">
               <MapPin className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold bg-gradient-brasil bg-clip-text text-transparent">
+            <a href="/" className="text-2xl font-bold bg-gradient-brasil bg-clip-text text-transparent hover:opacity-80 transition-opacity">
               TripNation
-            </span>
+            </a>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
+            <a href="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
+              Viagens
+            </a>
             <a href="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
               Comunidade
             </a>
@@ -60,24 +63,27 @@ const Header = () => {
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pt-4 border-t border-border">
             <div className="flex flex-col space-y-4">
-              <a href="#destinos" className="text-foreground hover:text-primary transition-colors font-medium">
-                Destinos
+              <a href="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
+                Viagens
               </a>
-              <a href="#experiencias" className="text-foreground hover:text-primary transition-colors font-medium">
-                Experiências
+              <a href="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
+                Comunidade
               </a>
-              <a href="#blog" className="text-foreground hover:text-primary transition-colors font-medium">
-                Blog
+              <a href="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
+                Avaliações
               </a>
-              <a href="#sobre" className="text-foreground hover:text-primary transition-colors font-medium">
-                Sobre
+              <a href="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
+                Chat
+              </a>
+              <a href="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
+                Perfil
               </a>
               <div className="flex space-x-2 pt-2">
                 <Button variant="ghost" size="icon">
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button className="flex-1 bg-gradient-brasil hover:opacity-90 transition-opacity">
-                  Planeje sua Viagem
+                <Button asChild className="flex-1 bg-gradient-brasil hover:opacity-90 transition-opacity">
+                  <a href="/auth">Entrar / Cadastrar</a>
                 </Button>
               </div>
             </div>
