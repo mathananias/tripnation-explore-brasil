@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, Filter, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AvaliacaoModal from "@/components/AvaliacaoModal";
 
 const mockReviews = [
   {
@@ -64,6 +65,7 @@ const mockReviews = [
 
 const Avaliacoes = () => {
   const [filterRating, setFilterRating] = useState<number | null>(null);
+  const [isAvaliacaoModalOpen, setIsAvaliacaoModalOpen] = useState(false);
 
   const filteredReviews = filterRating 
     ? mockReviews.filter(review => review.rating === filterRating)
@@ -179,7 +181,10 @@ const Avaliacoes = () => {
               <p className="text-muted-foreground mb-4">
                 Ajude outros viajantes com sua avaliação
               </p>
-              <Button className="bg-gradient-to-r from-laranja to-amarelo hover:from-laranja/90 hover:to-amarelo/90">
+              <Button 
+                className="bg-gradient-to-r from-laranja to-amarelo hover:from-laranja/90 hover:to-amarelo/90"
+                onClick={() => setIsAvaliacaoModalOpen(true)}
+              >
                 Escrever avaliação
               </Button>
             </Card>
@@ -187,6 +192,11 @@ const Avaliacoes = () => {
         </div>
       </main>
 
+      <AvaliacaoModal 
+        isOpen={isAvaliacaoModalOpen} 
+        onOpenChange={setIsAvaliacaoModalOpen} 
+      />
+      
       <Footer />
     </div>
   );

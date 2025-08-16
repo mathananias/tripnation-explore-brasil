@@ -22,7 +22,12 @@ const packagedTrips = [
     image: "/src/assets/escalada-chapada.jpg",
     rating: 4.8,
     difficulty: "Médio",
-    sport: "Trilha"
+    sport: "Trilha",
+    partnerships: {
+      transport: "Buser",
+      accommodation: "Pousada Horizonte",
+      restaurant: { name: "Restaurante Sabor da Serra", discount: "15% OFF" }
+    }
   },
   {
     id: 2,
@@ -33,7 +38,12 @@ const packagedTrips = [
     image: "/src/assets/surf-praia-atoba.jpg",
     rating: 4.9,
     difficulty: "Iniciante",
-    sport: "Surf"
+    sport: "Surf",
+    partnerships: {
+      transport: "Expresso Brasileiro",
+      accommodation: "Hotel Praia Azul",
+      restaurant: { name: "Marisqueira do Porto", discount: "20% OFF" }
+    }
   },
   {
     id: 3,
@@ -44,7 +54,12 @@ const packagedTrips = [
     image: "/src/assets/mountain-bike-mata-atlantica.jpg",
     rating: 4.7,
     difficulty: "Fácil",
-    sport: "Ciclismo"
+    sport: "Ciclismo",
+    partnerships: {
+      transport: "Viação Cometa",
+      accommodation: "Camping Natureza",
+      restaurant: { name: "Café da Trilha", discount: "10% OFF" }
+    }
   }
 ];
 
@@ -60,7 +75,9 @@ const Viagens = () => {
       endDate: "2024-03-18",
       budget: "R$ 1.500",
       people: 3,
-      notes: "Viagem em família para conhecer as cachoeiras"
+      notes: "Viagem em família para conhecer as cachoeiras",
+      isOpen: true,
+      interestedCount: 5
     }
   ]);
 
@@ -71,12 +88,17 @@ const Viagens = () => {
     endDate: "",
     budget: "",
     people: 1,
-    notes: ""
+    notes: "",
+    isOpen: true
   });
 
   const handleCreateTrip = () => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
-      setUserTrips([...userTrips, { ...newTrip, id: Date.now() }]);
+      setUserTrips([...userTrips, { 
+        ...newTrip, 
+        id: Date.now(), 
+        interestedCount: 0 
+      }]);
       setNewTrip({
         destination: "",
         sport: "",
@@ -84,7 +106,8 @@ const Viagens = () => {
         endDate: "",
         budget: "",
         people: 1,
-        notes: ""
+        notes: "",
+        isOpen: true
       });
       setIsCreateTripOpen(false);
     }
@@ -212,6 +235,33 @@ const Viagens = () => {
                         rows={3}
                       />
                     </div>
+                    <div>
+                      <Label>Tipo de Grupo</Label>
+                      <div className="flex space-x-4 mt-2">
+                        <Button
+                          type="button"
+                          variant={newTrip.isOpen ? "default" : "outline"}
+                          onClick={() => setNewTrip({...newTrip, isOpen: true})}
+                          className="flex-1"
+                        >
+                          Grupo Aberto
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={!newTrip.isOpen ? "default" : "outline"}
+                          onClick={() => setNewTrip({...newTrip, isOpen: false})}
+                          className="flex-1"
+                        >
+                          Grupo Fechado
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {newTrip.isOpen 
+                          ? "Qualquer usuário pode demonstrar interesse" 
+                          : "Apenas convidados podem participar"
+                        }
+                      </p>
+                    </div>
                   </div>
                   <div className="flex justify-end space-x-2">
                     <Button variant="outline" onClick={() => setIsCreateTripOpen(false)}>
@@ -256,19 +306,36 @@ const Viagens = () => {
                             {trip.notes && (
                               <p className="mt-2 text-sm text-muted-foreground">{trip.notes}</p>
                             )}
+                            <div className="flex items-center space-x-4 mt-3">
+                              <Badge variant={trip.isOpen ? "default" : "secondary"}>
+                                {trip.isOpen ? "Grupo Aberto" : "Grupo Fechado"}
+                              </Badge>
+                              {trip.isOpen && (
+                                <span className="text-sm text-muted-foreground">
+                                  {trip.interestedCount} pessoas interessadas
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex space-x-2">
-                            <Button variant="outline" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleDeleteTrip(trip.id)}
-                              className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                          <div className="flex flex-col space-y-2">
+                            {trip.isOpen && (
+                              <Button size="sm" className="bg-gradient-brasil hover:opacity-90">
+                                Tenho Interesse
+                              </Button>
+                            )}
+                            <div className="flex space-x-2">
+                              <Button variant="outline" size="sm">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleDeleteTrip(trip.id)}
+                                className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </CardContent>
@@ -311,6 +378,23 @@ const Viagens = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground mb-4">{trip.description}</p>
+                    
+                    {/* Parcerias */}
+                    <div className="mb-4 p-3 bg-background/50 rounded-lg">
+                      <p className="text-sm font-medium mb-2 text-muted-foreground">Em parceria com:</p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">
+                          🚌 {trip.partnerships.transport}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          🏨 {trip.partnerships.accommodation}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          🍽️ {trip.partnerships.restaurant.name} - {trip.partnerships.restaurant.discount}
+                        </Badge>
+                      </div>
+                    </div>
+                    
                     <Button className="w-full bg-gradient-brasil hover:opacity-90 transition-opacity">
                       <MapPin className="h-4 w-4 mr-2" />
                       Reservar Pacote
