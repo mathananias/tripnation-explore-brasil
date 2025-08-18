@@ -33,7 +33,7 @@ const Perfil = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 mt-4">
         <div className="max-w-4xl mx-auto">
           <Card className="mb-8">
             <CardContent className="pt-6">
