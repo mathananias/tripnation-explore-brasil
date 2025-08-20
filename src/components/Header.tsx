@@ -30,6 +30,9 @@ const Header = () => {
             <a href="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
               Avaliações
             </a>
+            <a href="/sobre" className="text-foreground hover:text-primary transition-colors font-medium">
+              Sobre Nós
+            </a>
             <a href="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
               Chat
             </a>
@@ -71,6 +74,9 @@ const Header = () => {
               </a>
               <a href="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
                 Avaliações
+              </a>
+              <a href="/sobre" className="text-foreground hover:text-primary transition-colors font-medium">
+                Sobre Nós
               </a>
               <a href="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
                 Chat

@@ -11,6 +11,7 @@ import Comunidade from "./pages/Comunidade";
 import Avaliacoes from "./pages/Avaliacoes";
 import Chat from "./pages/Chat";
 import Perfil from "./pages/Perfil";
+import Sobre from "./pages/Sobre";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/avaliacoes" element={<Avaliacoes />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/sobre" element={<Sobre />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
