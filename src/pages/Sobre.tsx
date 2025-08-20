@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   Leaf, 
   Users, 
@@ -16,6 +17,13 @@ import {
   Sparkles,
   Target
 } from "lucide-react";
+
+// Team member photos
+import danielVicente from "@/assets/daniel-vicente.jpg";
+import giovanaMonies from "@/assets/giovana-moises.jpg";
+import gustavoMartinez from "@/assets/gustavo-martinez.jpg";
+import luceliSarlo from "@/assets/luceli-sarlo.jpg";
+import matheusAnanias from "@/assets/matheus-ananias.jpg";
 
 const Sobre = () => {
   const diferenciais = [
@@ -89,34 +97,34 @@ const Sobre = () => {
 
   const team = [
     {
-      nome: "Luceli",
+      nome: "Luceli Sarlo",
       cargo: "CEO",
       funcao: "Visão estratégica e liderança executiva",
-      avatar: "👩‍💼"
+      photo: luceliSarlo
     },
     {
-      nome: "Matheus",
+      nome: "Matheus Ananias",
       cargo: "CFO",
       funcao: "Gestão financeira e planejamento",
-      avatar: "👨‍💼"
+      photo: matheusAnanias
     },
     {
-      nome: "Giovana",
+      nome: "Giovana Moisés",
       cargo: "CMO/HR",
       funcao: "Marketing e recursos humanos",
-      avatar: "👩‍🎨"
+      photo: giovanaMonies
     },
     {
-      nome: "Gustavo",
+      nome: "Gustavo Martinez",
       cargo: "CPO",
       funcao: "Desenvolvimento de produtos",
-      avatar: "👨‍🔧"
+      photo: gustavoMartinez
     },
     {
-      nome: "Daniel",
+      nome: "Daniel Vicente",
       cargo: "CTO",
       funcao: "Tecnologia e inovação",
-      avatar: "👨‍💻"
+      photo: danielVicente
     }
   ];
 
@@ -281,7 +289,16 @@ const Sobre = () => {
               {team.map((member, index) => (
                 <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
-                    <div className="text-6xl mb-4">{member.avatar}</div>
+                    <Avatar className="w-20 h-20 mx-auto mb-4">
+                      <AvatarImage 
+                        src={member.photo} 
+                        alt={`${member.nome} - ${member.cargo}`}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-lg bg-primary/10">
+                        {member.nome.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
                     <h3 className="text-xl font-semibold mb-1">{member.nome}</h3>
                     <Badge variant="secondary" className="mb-3">{member.cargo}</Badge>
                     <p className="text-sm text-muted-foreground">{member.funcao}</p>
