@@ -48,7 +48,7 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4 text-yellow">Suporte</h4>
             <ul className="space-y-2">
-              <li><a href="#sobre" className="text-background/80 hover:text-yellow transition-colors">Sobre nós</a></li>
+              <li><a href="/sobre" className="text-background/80 hover:text-yellow transition-colors">Sobre nós</a></li>
               <li><a href="#contato" className="text-background/80 hover:text-yellow transition-colors">Contato</a></li>
               <li><a href="#faq" className="text-background/80 hover:text-yellow transition-colors">FAQ</a></li>
               <li><a href="#termos" className="text-background/80 hover:text-yellow transition-colors">Termos</a></li>
