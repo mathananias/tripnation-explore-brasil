@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Menu, Search, MapPin } from "lucide-react";
 import { useState } from "react";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  return <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -27,7 +30,9 @@ const Header = () => {
             <a href="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
               Avaliações
             </a>
-            
+            <a href="/sobre" className="text-foreground hover:text-primary transition-colors font-medium">
+              Sobre Nós
+            </a>
             <a href="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
               Chat
             </a>
@@ -46,14 +51,20 @@ const Header = () => {
             </Button>
             
             {/* Mobile Menu Button */}
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
               <Menu className="w-5 h-5" />
             </Button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && <nav className="md:hidden mt-4 pt-4 border-t border-border">
+        {isMenuOpen && (
+          <nav className="md:hidden mt-4 pt-4 border-t border-border">
             <div className="flex flex-col space-y-4">
               <a href="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
                 Viagens
@@ -82,8 +93,11 @@ const Header = () => {
                 </Button>
               </div>
             </div>
-          </nav>}
+          </nav>
+        )}
       </div>
-    </header>;
+    </header>
+  );
 };
+
 export default Header;
