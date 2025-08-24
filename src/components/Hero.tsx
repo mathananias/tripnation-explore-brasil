@@ -23,7 +23,7 @@ const Hero = () => {
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            A Viagem é curta, mas a 
+            A Viagem é curta, mas a{" "}
             <span className="bg-gradient-sunset bg-clip-text text-transparent">Experiência</span>
             {" "}é para a vida!
           </h1>
