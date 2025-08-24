@@ -46,6 +46,14 @@ const experiencias = [{
   color: "text-secondary",
   bgColor: "bg-secondary/10"
 }];
+const badges = [
+  { nome: "Aventureiro Iniciante", icon: "🌱", descricao: "Complete sua primeira trilha" },
+  { nome: "Surfista das Ondas", icon: "🏄‍♂️", descricao: "Pegue 10 ondas diferentes" },
+  { nome: "Explorador de Cachoeiras", icon: "💎", descricao: "Visite 5 cachoeiras únicas" },
+  { nome: "Montanhista", icon: "⛰️", descricao: "Conquiste 3 picos diferentes" },
+  { nome: "Comunidade Ativa", icon: "🤝", descricao: "Participe de 5 viagens em grupo" }
+];
+
 const ExperienciasSection = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   
@@ -77,7 +85,34 @@ const ExperienciasSection = () => {
         })}
         </div>
 
-        <div className="bg-gradient-brasil rounded-2xl p-8 md:p-12 text-center text-white">
+        {/* Seção de Gamificação */}
+        <div className="mt-16">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold mb-4 bg-gradient-sunset bg-clip-text text-transparent">
+              Conquiste Badges e Mostre suas Aventuras
+            </h3>
+            <p className="text-muted-foreground">
+              Ganhe reconhecimento da comunidade explorando diferentes modalidades de aventura
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {badges.map((badge, index) => (
+              <div 
+                key={index}
+                className="bg-white border rounded-lg p-4 text-center hover:shadow-primary transition-shadow duration-300 group"
+              >
+                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  {badge.icon}
+                </div>
+                <h4 className="font-semibold text-sm mb-1">{badge.nome}</h4>
+                <p className="text-xs text-muted-foreground">{badge.descricao}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-gradient-brasil rounded-2xl p-8 md:p-12 text-center text-white mt-16">
           <h3 className="text-3xl md:text-4xl font-bold mb-4">
             Não sabe por onde começar?
           </h3>

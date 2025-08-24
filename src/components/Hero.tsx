@@ -23,13 +23,13 @@ const Hero = () => {
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Descubra o 
-            <span className="bg-gradient-sunset bg-clip-text text-transparent"> Brasil </span>
-            Secreto
+            A Viagem é curta, mas a 
+            <span className="bg-gradient-sunset bg-clip-text text-transparent">Experiência</span>
+            {" "}é para a vida!
           </h1>
           
           <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto leading-relaxed">
-            Aventuras únicas em destinos inexplorados. Trilhas épicas, surf em praias virgens e experiências que vão marcar sua vida.
+            Conecte-se a pessoas, destinos e aventuras inesquecíveis pelo Brasil. Nossa comunidade te espera.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -37,7 +37,7 @@ const Hero = () => {
               size="lg" 
               className="bg-gradient-sunset hover:opacity-90 transition-opacity text-lg px-8 py-3 shadow-accent"
             >
-              Explorar Destinos
+              Criar Viagem
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             
@@ -46,8 +46,7 @@ const Hero = () => {
               size="lg" 
               className="bg-white/10 border-white/30 hover:bg-white/20 text-white text-lg px-8 py-3 backdrop-blur-sm"
             >
-              <Play className="mr-2 w-5 h-5" />
-              Assistir Vídeo
+              Ver Grupos Abertos
             </Button>
           </div>
 
