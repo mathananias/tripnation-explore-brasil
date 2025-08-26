@@ -23,7 +23,7 @@ const ParceirosSection = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
             Vantagens exclusivas para membros TripNation
           </p>
-          <Badge variant="secondary" className="text-accent bg-accent/10 border-accent/20">
+          <Badge variant="secondary" className="text-accent bg-accent/10 border-accent/20 text-lg">
             Descontos de até 30% para comunidade
           </Badge>
         </div>
