@@ -351,53 +351,51 @@ const Viagens = () => {
             <h2 className="text-2xl font-bold mb-6 text-foreground">Pacotes de Viagens</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {packagedTrips.map((trip) => (
-                <Card key={trip.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300">
-                  <div className="relative h-48 bg-gradient-to-br from-primary/20 to-secondary/20">
-                    <div className="absolute inset-0 bg-black/10" />
-                    <div className="absolute top-3 left-3">
-                      <Badge variant="secondary">{trip.sport}</Badge>
-                    </div>
+                <Card key={trip.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group">
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={trip.image} 
+                      alt={`Pacote ${trip.title}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-background/80 text-foreground">{trip.difficulty}</Badge>
+                      <Badge variant="secondary" className="bg-white/90 text-primary">
+                        {trip.duration}
+                      </Badge>
+                    </div>
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-accent">
+                        {trip.price}
+                      </Badge>
                     </div>
                   </div>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg mb-1">{trip.title}</CardTitle>
-                        <div className="flex items-center space-x-1 mb-2">
-                          {renderStars(trip.rating)}
-                          <span className="text-sm text-muted-foreground ml-1">({trip.rating})</span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-primary">{trip.price}</p>
-                        <p className="text-sm text-muted-foreground">{trip.duration}</p>
-                      </div>
+                  
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-2 mb-2">
+                      <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                      <h3 className="font-semibold text-sm leading-tight">{trip.title}</h3>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">{trip.description}</p>
                     
-                    {/* Parcerias */}
-                    <div className="mb-4 p-3 bg-background/50 rounded-lg">
-                      <p className="text-sm font-medium mb-2 text-muted-foreground">Em parceria com:</p>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          🚌 {trip.partnerships.transport}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          🏨 {trip.partnerships.accommodation}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          🍽️ {trip.partnerships.restaurant.name} - {trip.partnerships.restaurant.discount}
-                        </Badge>
+                    <p className="text-sm text-muted-foreground mb-3">{trip.description}</p>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Users className="w-4 h-4" />
+                        <span>8/12 pessoas</span>
+                      </div>
+                      <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-brasil"
+                          style={{ width: `67%` }}
+                        />
                       </div>
                     </div>
                     
-                    <Button className="w-full bg-gradient-brasil hover:opacity-90 transition-opacity">
-                      <MapPin className="h-4 w-4 mr-2" />
-                      Reservar Pacote
+                    <Button 
+                      size="sm" 
+                      className="w-full bg-gradient-brasil hover:opacity-90"
+                    >
+                      Tenho Interesse
                     </Button>
                   </CardContent>
                 </Card>
