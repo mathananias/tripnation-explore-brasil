@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import documentoExemplo from "@/assets/documento-exemplo.png";
-
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,89 +17,81 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [documentFile, setDocumentFile] = useState<File | null>(null);
   const navigate = useNavigate();
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!documentFile) {
       toast({
         title: "Documento obrigatório",
         description: "Por favor, faça o upload de um documento para verificação.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setLoading(true);
-    
     try {
-      const { error } = await supabase.auth.signUp({
+      const {
+        error
+      } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
-            full_name: fullName,
+            full_name: fullName
           }
         }
       });
-
       if (error) throw error;
-
       toast({
         title: "Cadastro realizado!",
-        description: "Verifique seu email para confirmar a conta.",
+        description: "Verifique seu email para confirmar a conta."
       });
     } catch (error: any) {
       toast({
         title: "Erro no cadastro",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
   };
-
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const {
+        error
+      } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password
       });
-
       if (error) throw error;
-
       navigate("/");
       toast({
         title: "Login realizado!",
-        description: "Bem-vindo de volta ao TripNation!",
+        description: "Bem-vindo de volta ao TripNation!"
       });
     } catch (error: any) {
       toast({
         title: "Erro no login",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
   };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setDocumentFile(file);
     }
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-verde-claro to-azul-agua flex items-center justify-center p-4">
+  return <div className="min-h-screen bg-gradient-to-br from-verde-claro to-azul-agua flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-laranja to-amarelo bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-laranja to-amarelo bg-clip-text text-sky-500">
             TripNation
           </CardTitle>
           <CardDescription>
@@ -118,31 +109,13 @@ const Auth = () => {
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+                  <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Senha</Label>
                   <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
+                    <Input id="password" type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required />
+                    <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
@@ -157,42 +130,17 @@ const Auth = () => {
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="fullName">Nome Completo</Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
+                  <Input id="fullName" type="text" value={fullName} onChange={e => setFullName(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signupEmail">Email</Label>
-                  <Input
-                    id="signupEmail"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+                  <Input id="signupEmail" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signupPassword">Senha</Label>
                   <div className="relative">
-                    <Input
-                      id="signupPassword"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      minLength={6}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
+                    <Input id="signupPassword" type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
+                    <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
@@ -207,24 +155,13 @@ const Auth = () => {
                     <p className="text-sm text-muted-foreground mb-2">
                       RG, CNH ou Passaporte
                     </p>
-                    <input
-                      type="file"
-                      accept="image/*,.pdf"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      id="document-upload"
-                    />
-                    <Label
-                      htmlFor="document-upload"
-                      className="cursor-pointer text-primary hover:underline"
-                    >
+                    <input type="file" accept="image/*,.pdf" onChange={handleFileChange} className="hidden" id="document-upload" />
+                    <Label htmlFor="document-upload" className="cursor-pointer text-primary hover:underline">
                       Escolher arquivo
                     </Label>
-                    {documentFile && (
-                      <p className="text-sm text-green-600 mt-2">
+                    {documentFile && <p className="text-sm text-green-600 mt-2">
                         ✓ {documentFile.name}
-                      </p>
-                    )}
+                      </p>}
                   </div>
                   
                   <div className="bg-blue-50 p-3 rounded-lg">
@@ -241,11 +178,7 @@ const Auth = () => {
                   
                   <div className="text-center">
                     <p className="text-xs text-muted-foreground mb-2">Exemplo de documento:</p>
-                    <img 
-                      src={documentoExemplo} 
-                      alt="Exemplo de documento" 
-                      className="mx-auto max-w-32 rounded border"
-                    />
+                    <img src={documentoExemplo} alt="Exemplo de documento" className="mx-auto max-w-32 rounded border" />
                   </div>
                 </div>
                 
@@ -257,8 +190,6 @@ const Auth = () => {
           </Tabs>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default Auth;
