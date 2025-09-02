@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, MessageCircle, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const historias = [
   {
@@ -40,6 +41,8 @@ const historias = [
 ];
 
 const HistoriasComunidade = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -105,7 +108,11 @@ const HistoriasComunidade = () => {
         </div>
 
         <div className="text-center mt-8">
-          <Button size="lg" className="bg-gradient-ocean hover:opacity-90">
+          <Button 
+            size="lg" 
+            className="bg-gradient-ocean hover:opacity-90"
+            onClick={() => navigate('/comunidade')}
+          >
             Ver Mais Histórias
           </Button>
         </div>

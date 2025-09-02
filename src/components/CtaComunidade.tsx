@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CtaComunidade = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-20 bg-gradient-hero relative overflow-hidden">
       {/* Background decorativo */}
@@ -37,22 +40,15 @@ const CtaComunidade = () => {
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex justify-center">
             <Button 
               size="lg" 
               className="bg-gradient-sunset hover:opacity-90 transition-opacity text-lg px-8 py-4 shadow-accent group"
+              onClick={() => navigate('/auth')}
             >
               <Users className="mr-2 w-5 h-5" />
               Entre para a Comunidade TripNation
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="bg-white/10 border-white/30 hover:bg-white/20 text-white text-lg px-8 py-4 backdrop-blur-sm"
-            >
-              Participe de uma Viagem Hoje Mesmo
             </Button>
           </div>
         </div>

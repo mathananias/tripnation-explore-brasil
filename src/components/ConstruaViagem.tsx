@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, MapPin, Bed, Utensils, Car } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ConstruaViagem = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-16 bg-gradient-brasil relative overflow-hidden">
       {/* Background decorativo */}
@@ -57,6 +60,7 @@ const ConstruaViagem = () => {
               <Button 
                 size="lg" 
                 className="bg-gradient-sunset hover:opacity-90 text-white text-lg px-8 py-4 shadow-accent group"
+                onClick={() => navigate('/viagens')}
               >
                 Começar Planejamento
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const viagensAbertas = [
   {
@@ -47,6 +48,8 @@ const viagensAbertas = [
 ];
 
 const ViagensGrupo = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -104,6 +107,7 @@ const ViagensGrupo = () => {
                 <Button 
                   size="sm" 
                   className="w-full bg-gradient-brasil hover:opacity-90"
+                  onClick={() => navigate('/viagens')}
                 >
                   Tenho Interesse
                 </Button>
@@ -113,7 +117,12 @@ const ViagensGrupo = () => {
         </div>
 
         <div className="text-center mt-8">
-          <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            onClick={() => navigate('/viagens')}
+          >
             Ver Todas as Viagens Abertas
           </Button>
         </div>
