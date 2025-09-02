@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import ViagensGrupo from "@/components/ViagensGrupo";
-import DestinosDestaque from "@/components/DestinosDestaque";
+
 import HistoriasComunidade from "@/components/HistoriasComunidade";
 import ConstruaViagem from "@/components/ConstruaViagem";
 import ExperienciasSection from "@/components/ExperienciasSection";
@@ -16,7 +16,7 @@ const Index = () => {
       <Header />
       <Hero />
       <ViagensGrupo />
-      <DestinosDestaque />
+      
       <HistoriasComunidade />
       <ConstruaViagem />
       <div className="container mx-auto px-4 py-16">
