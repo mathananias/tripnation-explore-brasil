@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroImage from "@/assets/hero-destino-secreto.jpg";
@@ -6,6 +7,7 @@ import ChatModal from "@/components/ChatModal";
 
 const Hero = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const navigate = useNavigate();
   
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -36,8 +38,9 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="bg-gradient-sunset hover:opacity-90 transition-opacity text-lg px-8 py-3 shadow-accent"
+              onClick={() => navigate('/viagens')}
             >
-              Criar Viagem
+              Encontre sua viagem
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             
