@@ -7,7 +7,6 @@ import { MapPin, Calendar, Trophy, Star, Edit, Share2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import carlaProfile from "@/assets/carla-mendes-profile.jpg";
-
 const mockUser = {
   name: "Carla Mendes",
   bio: "Aventureira apaixonada por trilhas e ciclismo. Sempre em busca de novos destinos para explorar no Brasil!",
@@ -15,11 +14,19 @@ const mockUser = {
   joinDate: "Março 2023",
   engagementPoints: 250,
   favoritesSports: ["Trekking", "Ciclismo"],
-  completedTrips: [
-    { name: "Pico do Horizonte", date: "Jan 2024", rating: 5 },
-    { name: "Lagoa Azul", date: "Dez 2023", rating: 4 },
-    { name: "Serra das Estrelas", date: "Nov 2023", rating: 5 }
-  ],
+  completedTrips: [{
+    name: "Pico do Horizonte",
+    date: "Jan 2024",
+    rating: 5
+  }, {
+    name: "Lagoa Azul",
+    date: "Dez 2023",
+    rating: 4
+  }, {
+    name: "Serra das Estrelas",
+    date: "Nov 2023",
+    rating: 5
+  }],
   stats: {
     tripsCompleted: 12,
     photosShared: 45,
@@ -27,13 +34,11 @@ const mockUser = {
     friendsConnected: 23
   }
 };
-
 const Perfil = () => {
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 mt-4">
+      <main className="container mx-auto mt-4 my-[20px] px-[24px] py-[76px]">
         <div className="max-w-4xl mx-auto">
           <Card className="mb-8">
             <CardContent className="pt-6">
@@ -110,11 +115,9 @@ const Perfil = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {mockUser.favoritesSports.map((sport, index) => (
-                    <Badge key={index} variant="secondary">
+                  {mockUser.favoritesSports.map((sport, index) => <Badge key={index} variant="secondary">
                       {sport}
-                    </Badge>
-                  ))}
+                    </Badge>)}
                 </div>
               </CardContent>
             </Card>
@@ -146,24 +149,20 @@ const Perfil = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockUser.completedTrips.map((trip, index) => (
-                  <div key={index}>
+                {mockUser.completedTrips.map((trip, index) => <div key={index}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="font-semibold">{trip.name}</h3>
                         <p className="text-sm text-muted-foreground">{trip.date}</p>
                       </div>
                       <div className="flex items-center space-x-1">
-                        {Array.from({ length: trip.rating }, (_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        ))}
+                        {Array.from({
+                      length: trip.rating
+                    }, (_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
                       </div>
                     </div>
-                    {index < mockUser.completedTrips.length - 1 && (
-                      <Separator className="mt-4" />
-                    )}
-                  </div>
-                ))}
+                    {index < mockUser.completedTrips.length - 1 && <Separator className="mt-4" />}
+                  </div>)}
               </div>
               
               <div className="mt-6 text-center">
@@ -177,8 +176,6 @@ const Perfil = () => {
       </main>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Perfil;
