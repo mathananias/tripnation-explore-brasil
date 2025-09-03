@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, X } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import placeholderSvg from "@/assets/placeholder.svg";
 
 const mockDestinos = [
   {
@@ -12,7 +14,7 @@ const mockDestinos = [
     rating: 4.8,
     preco: "R$ 150/dia",
     posicao: { x: 25, y: 30 },
-    imagem: "/placeholder.svg",
+    imagem: placeholderSvg,
     descricao: "Ondas perfeitas para surf, frequentada por locais e poucos turistas."
   },
   {
@@ -22,7 +24,7 @@ const mockDestinos = [
     rating: 4.9,
     preco: "R$ 80/dia",
     posicao: { x: 60, y: 45 },
-    imagem: "/placeholder.svg",
+    imagem: placeholderSvg,
     descricao: "Vista panorâmica incrível após 3h de trilha moderada."
   },
   {
@@ -32,7 +34,7 @@ const mockDestinos = [
     rating: 4.7,
     preco: "R$ 120/dia",
     posicao: { x: 40, y: 65 },
-    imagem: "/placeholder.svg",
+    imagem: placeholderSvg,
     descricao: "Águas cristalinas ideais para mergulho e snorkeling."
   },
   {
@@ -42,7 +44,7 @@ const mockDestinos = [
     rating: 4.6,
     preco: "R$ 200/dia",
     posicao: { x: 75, y: 25 },
-    imagem: "/placeholder.svg",
+    imagem: placeholderSvg,
     descricao: "Formações rochosas desafiadoras para escalada esportiva."
   },
   {
@@ -52,7 +54,7 @@ const mockDestinos = [
     rating: 4.5,
     preco: "R$ 60/dia",
     posicao: { x: 15, y: 75 },
-    imagem: "/placeholder.svg",
+    imagem: placeholderSvg,
     descricao: "Percurso de mountain bike com diferentes níveis de dificuldade."
   }
 ];
@@ -132,9 +134,9 @@ const MapaInterativo = () => {
                       </Button>
                     </div>
                     
-                    <img
+                    <OptimizedImage
                       src={selectedDestino.imagem}
-                      alt={selectedDestino.nome}
+                      alt={`${selectedDestino.nome} - ${selectedDestino.categoria}`}
                       className="w-full h-32 object-cover rounded-lg mb-4"
                     />
                     

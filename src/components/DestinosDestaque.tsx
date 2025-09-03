@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, Calendar } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import surfImage from "@/assets/surf-brasil.jpg";
 import mountainBikeImage from "@/assets/mountain-bike-mata-atlantica.jpg";
 import escaladaImage from "@/assets/escalada-chapada.jpg";
@@ -56,9 +57,9 @@ const DestinosDestaque = () => {
           {destinos.map((destino) => (
             <Card key={destino.id} className="overflow-hidden group hover:shadow-lg transition-all duration-300">
               <div className="relative aspect-[4/3] overflow-hidden">
-                <img 
+                <OptimizedImage 
                   src={destino.imagem} 
-                  alt={destino.nome}
+                  alt={`${destino.nome} - ${destino.categoria} em ${destino.local}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 left-4">

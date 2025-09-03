@@ -3,14 +3,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, MessageCircle, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import carlaProfile from "@/assets/carla-mendes-profile.jpg";
+import danielProfile from "@/assets/daniel-vicente.jpg";
+import giovanaProfile from "@/assets/giovana-moises.jpg";
+import escaladaImage from "@/assets/escalada-chapada.jpg";
+import surfImage from "@/assets/surf-brasil.jpg";
+import serraImage from "@/assets/amanhecer-serra-estrelas.jpg";
 
 const historias = [
   {
     id: 1,
     autor: "Carla Mendes",
-    avatar: "/src/assets/carla-mendes-profile.jpg",
+    avatar: carlaProfile,
     local: "Chapada Diamantina, BA",
-    imagem: "/src/assets/escalada-chapada.jpg",
+    imagem: escaladaImage,
     texto: "Que experiência incrível! A trilha para a Cachoeira da Fumaça superou todas as expectativas. O grupo estava animado e fizemos amizades que vão durar para sempre! 🏔️✨",
     likes: 24,
     comentarios: 8,
@@ -19,9 +26,9 @@ const historias = [
   {
     id: 2,
     autor: "Daniel Vicente",
-    avatar: "/src/assets/daniel-vicente.jpg",
+    avatar: danielProfile,
     local: "Praia do Surf, CE",
-    imagem: "/src/assets/surf-brasil.jpg",
+    imagem: surfImage,
     texto: "Primeira vez no surf e que aventura! Os instrutores da TripNation são incríveis e o pessoal do grupo me ajudou muito. Já estou planejando a próxima! 🏄‍♂️",
     likes: 31,
     comentarios: 12,
@@ -30,9 +37,9 @@ const historias = [
   {
     id: 3,
     autor: "Giovana Moisés",
-    avatar: "/src/assets/giovana-moises.jpg",
+    avatar: giovanaProfile,
     local: "Serra da Mantiqueira, MG",
-    imagem: "/src/assets/amanhecer-serra-estrelas.jpg",
+    imagem: serraImage,
     texto: "Ver o nascer do sol na serra com essa galera foi mágico! Nada como compartilhar momentos únicos com pessoas que vibram na mesma energia 🌅💚",
     likes: 18,
     comentarios: 6,
@@ -79,9 +86,9 @@ const HistoriasComunidade = () => {
 
               {/* Imagem */}
               <div className="relative h-64 overflow-hidden">
-                <img 
+                <OptimizedImage 
                   src={historia.imagem} 
-                  alt={`Post de ${historia.autor}`}
+                  alt={`Post de ${historia.autor} em ${historia.local}`}
                   className="w-full h-full object-cover"
                 />
               </div>

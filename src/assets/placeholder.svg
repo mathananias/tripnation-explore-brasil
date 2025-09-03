@@ -1,0 +1,10 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="hsl(152, 15%, 95%)"/>
+  <g opacity="0.6">
+    <path d="M150 120L190 160L250 100L280 130V180H120V150L150 120Z" fill="hsl(152, 15%, 75%)"/>
+    <circle cx="170" cy="110" r="15" fill="hsl(152, 15%, 75%)"/>
+  </g>
+  <text x="200" y="220" text-anchor="middle" fill="hsl(152, 15%, 45%)" font-family="system-ui" font-size="14">
+    Carregando...
+  </text>
+</svg>

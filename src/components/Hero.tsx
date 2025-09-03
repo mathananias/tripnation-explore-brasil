@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import heroImage from "@/assets/hero-destino-secreto.jpg";
 import ChatModal from "@/components/ChatModal";
 
@@ -13,10 +14,11 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img 
+        <OptimizedImage 
           src={heroImage} 
           alt="Destino secreto brasileiro com lagoa cristalina" 
           className="w-full h-full object-cover"
+          lazy={false}
         />
         <div className="absolute inset-0 bg-gradient-hero" />
       </div>

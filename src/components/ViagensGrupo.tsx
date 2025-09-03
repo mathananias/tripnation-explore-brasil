@@ -3,13 +3,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import escaladaImage from "@/assets/escalada-chapada.jpg";
+import surfImage from "@/assets/surf-praia-atoba.jpg";
+import serraImage from "@/assets/amanhecer-serra-estrelas.jpg";
+import bikeImage from "@/assets/mountain-bike-mata-atlantica.jpg";
 
 const viagensAbertas = [
   {
     id: 1,
     local: "Chapada Diamantina, BA",
     atividade: "Trilha + Cachoeiras",
-    imagem: "/src/assets/escalada-chapada.jpg",
+    imagem: escaladaImage,
     interessados: 12,
     vagas: 15,
     data: "15-18 Nov",
@@ -19,7 +24,7 @@ const viagensAbertas = [
     id: 2,
     local: "Atobá Beach, PE",
     atividade: "Surf + Relaxamento",
-    imagem: "/src/assets/surf-praia-atoba.jpg",
+    imagem: surfImage,
     interessados: 8,
     vagas: 12,
     data: "22-25 Nov",
@@ -29,7 +34,7 @@ const viagensAbertas = [
     id: 3,
     local: "Serra da Estrela, RJ",
     atividade: "Amanhecer + Fotografia",
-    imagem: "/src/assets/amanhecer-serra-estrelas.jpg",
+    imagem: serraImage,
     interessados: 15,
     vagas: 20,
     data: "29 Nov-02 Dez",
@@ -39,7 +44,7 @@ const viagensAbertas = [
     id: 4,
     local: "Mata Atlântica, SP",
     atividade: "Mountain Bike",
-    imagem: "/src/assets/mountain-bike-mata-atlantica.jpg",
+    imagem: bikeImage,
     interessados: 6,
     vagas: 10,
     data: "06-08 Dez",
@@ -66,9 +71,9 @@ const ViagensGrupo = () => {
           {viagensAbertas.map((viagem) => (
             <Card key={viagem.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group">
               <div className="relative h-48 overflow-hidden">
-                <img 
+                <OptimizedImage 
                   src={viagem.imagem} 
-                  alt={`Viagem para ${viagem.local}`}
+                  alt={`Viagem para ${viagem.local} - ${viagem.atividade}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-3 right-3">
