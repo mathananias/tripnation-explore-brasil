@@ -36,40 +36,15 @@ const Hero = () => {
             Conecte-se a pessoas, destinos e aventuras inesquecíveis pelo Brasil. Nossa comunidade te espera.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex justify-center mb-12">
             <Button 
               size="lg" 
-              className="bg-gradient-sunset hover:opacity-90 transition-opacity text-lg px-8 py-3 shadow-accent"
+              className="bg-gradient-sunset hover:opacity-90 transition-opacity text-xl px-12 py-4 shadow-accent"
               onClick={() => navigate('/viagens')}
             >
               Encontre sua viagem
-              <ArrowRight aria-hidden="true" className="ml-2 w-5 h-5" />
+              <ArrowRight aria-hidden="true" className="ml-2 w-6 h-6" />
             </Button>
-
-            <Button
-              variant="outline"
-              size="lg"
-              className="bg-white/10 border-white/30 hover:bg-white/20 text-white text-lg px-8 py-3 backdrop-blur-sm"
-              onClick={() => navigate('/comunidade')}
-            >
-              Ver Grupos Abertos
-            </Button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-yellow">150+</div>
-              <div className="text-sm text-white/80">Destinos</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-yellow">50k+</div>
-              <div className="text-sm text-white/80">Aventureiros</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-yellow">12</div>
-              <div className="text-sm text-white/80">Esportes</div>
-            </div>
           </div>
         </div>
 
