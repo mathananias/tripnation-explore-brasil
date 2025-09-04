@@ -56,7 +56,7 @@ const ViagensGrupo = () => {
   const navigate = useNavigate();
   
   return (
-    <section className="py-16 bg-muted/30">
+    <section id="destinos" className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-brasil bg-clip-text text-transparent">
@@ -90,7 +90,7 @@ const ViagensGrupo = () => {
               
               <CardContent className="p-4">
                 <div className="flex items-start gap-2 mb-2">
-                  <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <MapPin aria-hidden="true" className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                   <h3 className="font-semibold text-sm leading-tight">{viagem.local}</h3>
                 </div>
                 
@@ -98,7 +98,7 @@ const ViagensGrupo = () => {
                 
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="w-4 h-4" />
+                    <Users aria-hidden="true" className="w-4 h-4" />
                     <span>{viagem.interessados}/{viagem.vagas} pessoas</span>
                   </div>
                   <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">

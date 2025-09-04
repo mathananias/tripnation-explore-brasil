@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, Search, MapPin } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,39 +13,47 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="bg-gradient-brasil p-2 rounded-lg">
-              <MapPin className="w-6 h-6 text-white" />
+              <MapPin aria-hidden="true" className="w-6 h-6 text-white" />
             </div>
-            <a href="/" className="text-2xl font-bold bg-gradient-brasil bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+            <Link
+              to="/"
+              className="text-2xl font-bold bg-gradient-brasil bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            >
               TripNation
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link to="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
               Viagens
-            </a>
-            <a href="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
+            </Link>
+            <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
               Comunidade
-            </a>
-            <a href="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
+            </Link>
+            <Link to="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
               Avaliações
-            </a>
-            <a href="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
+            </Link>
+            <Link to="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
               Chat
-            </a>
-            <a href="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
+            </Link>
+            <Link to="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
               Perfil
-            </a>
+            </Link>
           </nav>
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
-              <Search className="w-5 h-5" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden md:flex"
+              aria-label="Pesquisar"
+            >
+              <Search aria-hidden="true" className="w-5 h-5" />
             </Button>
             <Button asChild className="hidden md:flex bg-gradient-brasil hover:opacity-90 transition-opacity">
-              <a href="/auth">Entrar / Cadastrar</a>
+              <Link to="/auth">Entrar / Cadastrar</Link>
             </Button>
             
             {/* Mobile Menu Button */}
@@ -53,8 +62,9 @@ const Header = () => {
               size="icon"
               className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Abrir menu"
             >
-              <Menu className="w-5 h-5" />
+              <Menu aria-hidden="true" className="w-5 h-5" />
             </Button>
           </div>
         </div>
@@ -63,27 +73,27 @@ const Header = () => {
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pt-4 border-t border-border">
             <div className="flex flex-col space-y-4">
-              <a href="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
+              <Link to="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
                 Viagens
-              </a>
-              <a href="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
+              </Link>
+              <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
                 Comunidade
-              </a>
-              <a href="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
+              </Link>
+              <Link to="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
                 Avaliações
-              </a>
-              <a href="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
+              </Link>
+              <Link to="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
                 Chat
-              </a>
-              <a href="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
+              </Link>
+              <Link to="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
                 Perfil
-              </a>
+              </Link>
               <div className="flex space-x-2 pt-2">
-                <Button variant="ghost" size="icon">
-                  <Search className="w-5 h-5" />
+                <Button variant="ghost" size="icon" aria-label="Pesquisar">
+                  <Search aria-hidden="true" className="w-5 h-5" />
                 </Button>
                 <Button asChild className="flex-1 bg-gradient-brasil hover:opacity-90 transition-opacity">
-                  <a href="/auth">Entrar / Cadastrar</a>
+                  <Link to="/auth">Entrar / Cadastrar</Link>
                 </Button>
               </div>
             </div>

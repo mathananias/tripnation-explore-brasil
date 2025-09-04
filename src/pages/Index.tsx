@@ -9,10 +9,12 @@ import ParceirosSection from "@/components/ParceirosSection";
 import CtaComunidade from "@/components/CtaComunidade";
 import Footer from "@/components/Footer";
 import MapaInterativo from "@/components/MapaInterativo";
+import SEO from "@/components/SEO";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <SEO title="TripNation | Aventuras pelo Brasil" description="Conecte-se a pessoas, destinos e aventuras inesquecíveis." />
       <Header />
       <Hero />
       <ViagensGrupo />

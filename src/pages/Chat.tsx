@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Send, Phone, Video, MoreVertical } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const mockMessages = [
   {
@@ -80,6 +81,7 @@ const Chat = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Chat | TripNation" description="Converse com outros aventureiros em tempo real." />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -163,8 +165,8 @@ const Chat = () => {
                   onKeyPress={handleKeyPress}
                   className="flex-1"
                 />
-                <Button onClick={handleSendMessage} size="icon">
-                  <Send className="h-4 w-4" />
+                <Button onClick={handleSendMessage} size="icon" aria-label="Enviar mensagem">
+                  <Send aria-hidden="true" className="h-4 w-4" />
                 </Button>
               </div>
             </div>

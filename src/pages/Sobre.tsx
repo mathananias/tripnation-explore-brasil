@@ -3,20 +3,21 @@ import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  Leaf, 
-  Users, 
-  Heart, 
-  Globe, 
-  DollarSign, 
-  Crown, 
-  Handshake, 
+import {
+  Leaf,
+  Users,
+  Heart,
+  Globe,
+  DollarSign,
+  Crown,
+  Handshake,
   BarChart3,
   TreePine,
   MapPin,
   Sparkles,
   Target
 } from "lucide-react";
+import SEO from "@/components/SEO";
 
 // Team member photos
 import danielVicente from "@/assets/daniel-vicente.jpg";
@@ -28,22 +29,22 @@ import matheusAnanias from "@/assets/matheus-ananias.jpg";
 const Sobre = () => {
   const diferenciais = [
     {
-      icon: <Leaf className="w-8 h-8 text-green-600" />,
+      icon: <Leaf aria-hidden="true" className="w-8 h-8 text-green-600" />,
       titulo: "Turismo Sustentável",
       descricao: "Descentralizado e com impacto positivo"
     },
     {
-      icon: <Heart className="w-8 h-8 text-red-500" />,
+      icon: <Heart aria-hidden="true" className="w-8 h-8 text-red-500" />,
       titulo: "Experiências Autênticas",
       descricao: "Curadoria local e vivências únicas"
     },
     {
-      icon: <Users className="w-8 h-8 text-blue-600" />,
+      icon: <Users aria-hidden="true" className="w-8 h-8 text-blue-600" />,
       titulo: "Foco no Viajante Solo",
       descricao: "Conexões reais e comunidade acolhedora"
     },
     {
-      icon: <Globe className="w-8 h-8 text-purple-600" />,
+      icon: <Globe aria-hidden="true" className="w-8 h-8 text-purple-600" />,
       titulo: "Comunidade Real",
       descricao: "Rede de viajantes engajados"
     }
@@ -51,22 +52,22 @@ const Sobre = () => {
 
   const modeloNegocio = [
     {
-      icon: <DollarSign className="w-6 h-6 text-green-600" />,
+      icon: <DollarSign aria-hidden="true" className="w-6 h-6 text-green-600" />,
       titulo: "Comissão sobre Reservas",
       descricao: "Revenue share sustentável com parceiros locais"
     },
     {
-      icon: <Crown className="w-6 h-6 text-gold" />,
+      icon: <Crown aria-hidden="true" className="w-6 h-6 text-yellow-500" />,
       titulo: "Planos de Assinatura",
       descricao: "Benefícios exclusivos para viajantes frequentes"
     },
     {
-      icon: <Handshake className="w-6 h-6 text-blue-600" />,
+      icon: <Handshake aria-hidden="true" className="w-6 h-6 text-blue-600" />,
       titulo: "Parcerias Estratégicas",
       descricao: "Transporte, hospedagem, gastronomia e ESG"
     },
     {
-      icon: <BarChart3 className="w-6 h-6 text-purple-600" />,
+      icon: <BarChart3 aria-hidden="true" className="w-6 h-6 text-purple-600" />,
       titulo: "Relatórios de Impacto",
       descricao: "Transparência social e ambiental"
     }
@@ -74,22 +75,22 @@ const Sobre = () => {
 
   const impactos = [
     {
-      icon: <TreePine className="w-6 h-6 text-green-600" />,
+      icon: <TreePine aria-hidden="true" className="w-6 h-6 text-green-600" />,
       titulo: "Preservação Ambiental",
       descricao: "Turismo regenerativo e consciente"
     },
     {
-      icon: <MapPin className="w-6 h-6 text-orange-500" />,
+      icon: <MapPin aria-hidden="true" className="w-6 h-6 text-orange-500" />,
       titulo: "Renda Local",
       descricao: "Fortalecimento de economias regionais"
     },
     {
-      icon: <Users className="w-6 h-6 text-blue-600" />,
+      icon: <Users aria-hidden="true" className="w-6 h-6 text-blue-600" />,
       titulo: "Inclusão Social",
       descricao: "Diversidade e acessibilidade"
     },
     {
-      icon: <Sparkles className="w-6 h-6 text-purple-600" />,
+      icon: <Sparkles aria-hidden="true" className="w-6 h-6 text-purple-600" />,
       titulo: "Transformação Pessoal",
       descricao: "Crescimento através de conexões"
     }
@@ -130,6 +131,7 @@ const Sobre = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Sobre | TripNation" description="Conheça a TripNation e nossa missão de conectar aventureiros." />
       <Header />
       
       <main className="pt-20">
@@ -169,7 +171,7 @@ const Sobre = () => {
         <section className="py-16 bg-gradient-to-r from-primary/5 to-secondary/5">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-4xl mx-auto">
-              <Target className="w-16 h-16 mx-auto mb-6 text-primary" />
+              <Target aria-hidden="true" className="w-16 h-16 mx-auto mb-6 text-primary" />
               <h2 className="text-3xl font-bold mb-6">Nossa Missão</h2>
               <div className="bg-gradient-brasil p-8 rounded-2xl">
                 <p className="text-2xl md:text-3xl font-bold text-white">

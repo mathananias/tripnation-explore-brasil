@@ -71,3 +71,16 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Environment
+
+Configure the following variables in a `.env` file before running the project:
+
+```
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+```
+
+`public/sitemap.xml` usa `{BASE_URL}` como placeholder. Substitua pelo domínio final durante o deploy, assim como o `href` canônico em `index.html`.
+
+> **Nota:** Ative Row Level Security (RLS) no Supabase e mantenha as chaves fora do repositório.
