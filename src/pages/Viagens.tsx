@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 const packagedTrips = [
   {
@@ -366,10 +367,11 @@ const Viagens = () => {
               {packagedTrips.map((trip) => (
                 <Card key={trip.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group">
                   <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={trip.image} 
+                    <OptimizedImage
+                      src={trip.image}
                       alt={`Pacote ${trip.title}`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      lazy
                     />
                     <div className="absolute top-3 right-3">
                       <Badge variant="secondary" className="bg-white/90 text-primary">
