@@ -1,5 +1,5 @@
-import { useState } from "react";
-import ChatModal from "@/components/ChatModal";
+import { useState, useCallback, lazy, Suspense } from "react";
+const ChatModal = lazy(() => import("@/components/ChatModal"));
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2 } from "lucide-react";
+import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -92,13 +92,16 @@ const Viagens = () => {
     isOpen: true
   });
 
-  const handleCreateTrip = () => {
+  const handleCreateTrip = useCallback(() => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
-      setUserTrips([...userTrips, { 
-        ...newTrip, 
-        id: Date.now(), 
-        interestedCount: 0 
-      }]);
+      setUserTrips([
+        ...userTrips,
+        {
+          ...newTrip,
+          id: Date.now(),
+          interestedCount: 0
+        }
+      ]);
       setNewTrip({
         destination: "",
         sport: "",
@@ -111,11 +114,21 @@ const Viagens = () => {
       });
       setIsCreateTripOpen(false);
     }
-  };
+  }, [newTrip, userTrips]);
 
-  const handleDeleteTrip = (id: number) => {
-    setUserTrips(userTrips.filter(trip => trip.id !== id));
-  };
+  const handleDeleteTrip = useCallback(
+    (id: number) => {
+      setUserTrips(userTrips.filter((trip) => trip.id !== id));
+    },
+    [userTrips]
+  );
+
+  const handleOpenChat = useCallback(() => setIsChatOpen(true), []);
+  const handleChatOpenChange = useCallback((open: boolean) => setIsChatOpen(open), []);
+  const handleCreateTripOpenChange = useCallback(
+    (open: boolean) => setIsCreateTripOpen(open),
+    []
+  );
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -145,7 +158,7 @@ const Viagens = () => {
           <div className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-foreground">Criar Nova Viagem</h2>
-              <Dialog open={isCreateTripOpen} onOpenChange={setIsCreateTripOpen}>
+              <Dialog open={isCreateTripOpen} onOpenChange={handleCreateTripOpenChange}>
                 <DialogTrigger asChild>
                   <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity">
                     <Plus className="h-5 w-5 mr-2" />
@@ -415,7 +428,7 @@ const Viagens = () => {
               </p>
               <Button 
                 className="bg-gradient-sunset hover:opacity-90 transition-opacity text-white"
-                onClick={() => setIsChatOpen(true)}
+                onClick={handleOpenChat}
               >
                 Solicitar Pacote Personalizado
               </Button>
@@ -424,7 +437,12 @@ const Viagens = () => {
         </div>
       </main>
 
-      <ChatModal isOpen={isChatOpen} onOpenChange={setIsChatOpen} />
+      <Suspense
+        fallback=
+          {<div className="flex justify-center p-4"><Loader2 className="h-6 w-6 animate-spin" /></div>}
+      >
+        <ChatModal isOpen={isChatOpen} onOpenChange={handleChatOpenChange} />
+      </Suspense>
       
       <Footer />
     </div>
