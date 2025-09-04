@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,49 +10,44 @@ interface ChatModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const initialMessages = [
-  {
-    id: 1,
-    sender: "specialist",
-    text:
-      "Olá! Sou o Lucas, especialista da TripNation. Qual destino ou esporte você gostaria de explorar?",
-    time: "14:32"
-  },
-  {
-    id: 2,
-    sender: "user",
-    text: "Estou pensando em algo de trilha na Chapada dos Veadeiros.",
-    time: "14:35"
-  },
-  {
-    id: 3,
-    sender: "specialist",
-    text:
-      "Boa escolha! Me fale um pouco mais, quantos dias você pretende passar por lá? Deseja incluir hospedagem?",
-    time: "14:36"
-  }
-];
-
 const ChatModal = ({ isOpen, onOpenChange }: ChatModalProps) => {
   const [message, setMessage] = useState("");
 
-  const handleSendMessage = useCallback(() => {
+  const initialMessages = [
+    {
+      id: 1,
+      sender: "specialist",
+      text: "Olá! Sou o Lucas, especialista da TripNation. Qual destino ou esporte você gostaria de explorar?",
+      time: "14:32"
+    },
+    {
+      id: 2,
+      sender: "user",
+      text: "Estou pensando em algo de trilha na Chapada dos Veadeiros.",
+      time: "14:35"
+    },
+    {
+      id: 3,
+      sender: "specialist",
+      text: "Boa escolha! Me fale um pouco mais, quantos dias você pretende passar por lá? Deseja incluir hospedagem?",
+      time: "14:36"
+    }
+  ];
+
+  const handleSendMessage = () => {
     if (message.trim()) {
       // This is just illustrative for the prototype
       console.log("Mensagem enviada:", message);
       setMessage("");
     }
-  }, [message]);
+  };
 
-  const handleKeyPress = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleSendMessage();
-      }
-    },
-    [handleSendMessage]
-  );
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
