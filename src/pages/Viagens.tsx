@@ -11,6 +11,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import escaladaImage from "@/assets/escalada-chapada.jpg";
+import surfImage from "@/assets/surf-praia-atoba.jpg";
+import bikeImage from "@/assets/mountain-bike-mata-atlantica.jpg";
+import SEO from "@/components/SEO";
 
 const packagedTrips = [
   {
@@ -19,7 +23,7 @@ const packagedTrips = [
     duration: "3 dias",
     price: "R$ 1.200",
     description: "Inclui guia e hospedagem simples",
-    image: "/src/assets/escalada-chapada.jpg",
+    image: escaladaImage,
     rating: 4.8,
     difficulty: "Médio",
     sport: "Trilha",
@@ -35,7 +39,7 @@ const packagedTrips = [
     duration: "5 dias",
     price: "R$ 2.500",
     description: "Inclui aulas de surf e hospedagem frente-mar",
-    image: "/src/assets/surf-praia-atoba.jpg",
+    image: surfImage,
     rating: 4.9,
     difficulty: "Iniciante",
     sport: "Surf",
@@ -51,7 +55,7 @@ const packagedTrips = [
     duration: "2 dias",
     price: "R$ 900",
     description: "Inclui aluguel de bike e camping",
-    image: "/src/assets/mountain-bike-mata-atlantica.jpg",
+    image: bikeImage,
     rating: 4.7,
     difficulty: "Fácil",
     sport: "Ciclismo",
@@ -119,15 +123,17 @@ const Viagens = () => {
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <Star 
-        key={i} 
-        className={`h-4 w-4 ${i < Math.floor(rating) ? "fill-yellow text-yellow" : "text-muted"}`} 
+      <Star
+        key={i}
+        aria-hidden="true"
+        className={`h-4 w-4 ${i < Math.floor(rating) ? "fill-yellow text-yellow" : "text-muted"}`}
       />
     ));
   };
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Viagens | TripNation" description="Explore pacotes e crie suas próprias viagens pelo Brasil." />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -148,7 +154,7 @@ const Viagens = () => {
               <Dialog open={isCreateTripOpen} onOpenChange={setIsCreateTripOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity">
-                    <Plus className="h-5 w-5 mr-2" />
+                    <Plus aria-hidden="true" className="h-5 w-5 mr-2" />
                     Criar Viagem
                   </Button>
                 </DialogTrigger>
@@ -372,7 +378,7 @@ const Viagens = () => {
                   
                   <CardContent className="p-4">
                     <div className="flex items-start gap-2 mb-2">
-                      <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                      <MapPin aria-hidden="true" className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                       <h3 className="font-semibold text-sm leading-tight">{trip.title}</h3>
                     </div>
                     
@@ -380,7 +386,7 @@ const Viagens = () => {
                     
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users className="w-4 h-4" />
+                        <Users aria-hidden="true" className="w-4 h-4" />
                         <span>8/12 pessoas</span>
                       </div>
                       <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">

@@ -7,6 +7,7 @@ import { Star, Filter, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AvaliacaoModal from "@/components/AvaliacaoModal";
+import SEO from "@/components/SEO";
 
 const mockReviews = [
   {
@@ -82,6 +83,7 @@ const Avaliacoes = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Avaliações | TripNation" description="Leia avaliações de aventuras e destinos pelo Brasil." />
       <Header />
       
       <main className="container mx-auto px-4 py-8">

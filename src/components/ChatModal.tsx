@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send } from "lucide-react";
+import carla from "@/assets/carla-mendes-profile.jpg";
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -56,7 +57,7 @@ const ChatModal = ({ isOpen, onOpenChange }: ChatModalProps) => {
         <DialogHeader className="p-4 border-b bg-gradient-brasil text-white">
           <div className="flex items-center space-x-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage src="/src/assets/carla-mendes-profile.jpg" alt="Lucas" />
+              <AvatarImage src={carla} alt="Lucas" />
               <AvatarFallback className="bg-white text-primary font-semibold">LC</AvatarFallback>
             </Avatar>
             <div>
@@ -101,12 +102,13 @@ const ChatModal = ({ isOpen, onOpenChange }: ChatModalProps) => {
               onKeyPress={handleKeyPress}
               className="flex-1"
             />
-            <Button 
+            <Button
               onClick={handleSendMessage}
               size="icon"
               className="bg-gradient-brasil hover:opacity-90 transition-opacity"
+              aria-label="Enviar mensagem"
             >
-              <Send className="h-4 w-4" />
+              <Send aria-hidden="true" className="h-4 w-4" />
             </Button>
           </div>
         </div>

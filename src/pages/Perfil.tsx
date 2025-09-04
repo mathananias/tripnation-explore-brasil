@@ -7,6 +7,7 @@ import { MapPin, Calendar, Trophy, Star, Edit, Share2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import carlaProfile from "@/assets/carla-mendes-profile.jpg";
+import SEO from "@/components/SEO";
 const mockUser = {
   name: "Carla Mendes",
   bio: "Aventureira apaixonada por trilhas e ciclismo. Sempre em busca de novos destinos para explorar no Brasil!",
@@ -36,6 +37,7 @@ const mockUser = {
 };
 const Perfil = () => {
   return <div className="min-h-screen bg-background">
+      <SEO title="Perfil | TripNation" description="Gerencie seu perfil e veja suas conquistas." />
       <Header />
       
       <main className="container mx-auto mt-4 my-[20px] px-[24px] py-[76px]">
@@ -52,7 +54,7 @@ const Perfil = () => {
                   <div className="flex items-center space-x-4 mb-2">
                     <h1 className="text-3xl font-bold">{mockUser.name}</h1>
                     <Badge className="bg-gradient-to-r from-laranja to-amarelo text-white">
-                      <Trophy className="w-3 h-3 mr-1" />
+                      <Trophy aria-hidden="true" className="w-3 h-3 mr-1" />
                       {mockUser.engagementPoints} pontos
                     </Badge>
                   </div>
@@ -61,22 +63,22 @@ const Perfil = () => {
                   
                   <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-1" />
+                      <MapPin aria-hidden="true" className="w-4 h-4 mr-1" />
                       {mockUser.location}
                     </div>
                     <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
+                      <Calendar aria-hidden="true" className="w-4 h-4 mr-1" />
                       Desde {mockUser.joinDate}
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="icon">
-                    <Share2 className="h-4 w-4" />
+                  <Button variant="outline" size="icon" aria-label="Compartilhar perfil">
+                    <Share2 aria-hidden="true" className="h-4 w-4" />
                   </Button>
                   <Button>
-                    <Edit className="h-4 w-4 mr-2" />
+                    <Edit aria-hidden="true" className="h-4 w-4 mr-2" />
                     Editar Perfil
                   </Button>
                 </div>
@@ -128,15 +130,15 @@ const Perfil = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
+                  <Trophy aria-hidden="true" className="w-5 h-5 text-yellow-500" />
                   <span className="text-sm">Primeira Trilha</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
+                  <Trophy aria-hidden="true" className="w-5 h-5 text-yellow-500" />
                   <span className="text-sm">10 Destinos</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
+                  <Trophy aria-hidden="true" className="w-5 h-5 text-yellow-500" />
                   <span className="text-sm">Explorador</span>
                 </div>
               </CardContent>
@@ -158,7 +160,9 @@ const Perfil = () => {
                       <div className="flex items-center space-x-1">
                         {Array.from({
                       length: trip.rating
-                    }, (_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
+                    }, (_, i) => (
+                          <Star key={i} aria-hidden="true" className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        ))}
                       </div>
                     </div>
                     {index < mockUser.completedTrips.length - 1 && <Separator className="mt-4" />}

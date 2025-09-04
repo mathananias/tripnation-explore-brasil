@@ -43,13 +43,14 @@ const Hero = () => {
               onClick={() => navigate('/viagens')}
             >
               Encontre sua viagem
-              <ArrowRight className="ml-2 w-5 h-5" />
+              <ArrowRight aria-hidden="true" className="ml-2 w-5 h-5" />
             </Button>
-            
-            <Button 
-              variant="outline" 
-              size="lg" 
+
+            <Button
+              variant="outline"
+              size="lg"
               className="bg-white/10 border-white/30 hover:bg-white/20 text-white text-lg px-8 py-3 backdrop-blur-sm"
+              onClick={() => navigate('/comunidade')}
             >
               Ver Grupos Abertos
             </Button>
