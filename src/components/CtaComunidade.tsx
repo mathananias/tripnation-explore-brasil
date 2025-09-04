@@ -19,25 +19,9 @@ const CtaComunidade = () => {
             do Brasil
           </h2>
           
-          <p className="text-xl md:text-2xl mb-12 text-white/90 max-w-2xl mx-auto leading-relaxed">
-            Mais de 50.000 aventureiros já fazem parte da TripNation. Sua próxima aventura te espera!
+          <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto leading-relaxed">
+            Junte-se à comunidade TripNation e descubra sua próxima aventura!
           </p>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto mb-12">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow">50k+</div>
-              <div className="text-sm text-white/80">Aventureiros</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow">150+</div>
-              <div className="text-sm text-white/80">Destinos</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow">98%</div>
-              <div className="text-sm text-white/80">Satisfação</div>
-            </div>
-          </div>
 
           {/* CTAs */}
           <div className="flex justify-center">

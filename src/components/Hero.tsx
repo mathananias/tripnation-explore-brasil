@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
+import { Link } from "react-router-dom";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import heroImage from "@/assets/hero-destino-secreto.jpg";
 import ChatModal from "@/components/ChatModal";
 
 const Hero = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const navigate = useNavigate();
   
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -36,40 +34,13 @@ const Hero = () => {
             Conecte-se a pessoas, destinos e aventuras inesquecíveis pelo Brasil. Nossa comunidade te espera.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Button 
-              size="lg" 
-              className="bg-gradient-sunset hover:opacity-90 transition-opacity text-lg px-8 py-3 shadow-accent"
-              onClick={() => navigate('/viagens')}
-            >
-              Encontre sua viagem
-              <ArrowRight aria-hidden="true" className="ml-2 w-5 h-5" />
-            </Button>
-
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Button
-              variant="outline"
-              size="lg"
-              className="bg-white/10 border-white/30 hover:bg-white/20 text-white text-lg px-8 py-3 backdrop-blur-sm"
-              onClick={() => navigate('/comunidade')}
+              asChild
+              className="bg-gradient-brasil hover:opacity-90 text-white text-lg px-8 py-3 rounded-2xl"
             >
-              Ver Grupos Abertos
+              <Link to="/viagens">Encontre sua viagem →</Link>
             </Button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-yellow">150+</div>
-              <div className="text-sm text-white/80">Destinos</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-yellow">50k+</div>
-              <div className="text-sm text-white/80">Aventureiros</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-yellow">12</div>
-              <div className="text-sm text-white/80">Esportes</div>
-            </div>
           </div>
         </div>
 
