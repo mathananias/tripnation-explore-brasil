@@ -6,26 +6,18 @@ import { OptimizedImage } from "@/components/ui/optimized-image";
 import heroImage from "@/assets/hero-destino-secreto.jpg";
 import ChatModal from "@/components/ChatModal";
 import QuizCTA from "@/components/QuizCTA";
-
 const Hero = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const navigate = useNavigate();
-
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <OptimizedImage
-          src={heroImage}
-          alt="Destino secreto brasileiro com lagoa cristalina"
-          className="w-full h-full object-cover"
-          lazy={false}
-        />
+        <OptimizedImage src={heroImage} alt="Destino secreto brasileiro com lagoa cristalina" className="w-full h-full object-cover" lazy={false} />
         <div className="absolute inset-0 bg-gradient-hero" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 text-center text-white">
+      <div className="relative z-10 container mx-auto px-4 text-center text-white my-0 py-[84px]">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             A Viagem é curta, mas a{" "}
@@ -36,11 +28,7 @@ const Hero = () => {
             Conecte-se a pessoas, destinos e aventuras inesquecíveis pelo Brasil. Nossa comunidade te espera.
           </p>
           <div className="flex justify-center mb-12">
-            <Button
-              size="lg"
-              className="bg-gradient-sunset hover:opacity-90 transition-opacity text-xl px-12 py-4 shadow-accent"
-              onClick={() => navigate('/viagens')}
-            >
+            <Button size="lg" className="bg-gradient-sunset hover:opacity-90 transition-opacity text-xl px-12 py-4 shadow-accent" onClick={() => navigate('/viagens')}>
               Encontre sua viagem
               <ArrowRight aria-hidden="true" className="ml-2 w-6 h-6" />
             </Button>
@@ -60,8 +48,6 @@ const Hero = () => {
       </div>
 
       <ChatModal isOpen={isChatOpen} onOpenChange={setIsChatOpen} />
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;

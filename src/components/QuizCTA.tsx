@@ -251,7 +251,7 @@ const QuizCTA = () => {
   };
   return <div className="flex flex-col items-center">
       {/* Botão CTA para abrir o quiz */}
-      <Button variant="secondary" onClick={startQuiz} className="mt-6 my-[45px]">
+      <Button variant="secondary" onClick={startQuiz} className="mt-6 my-[45px] mx-0 px-[58px]">
         Descubra sua viagem ideal
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
