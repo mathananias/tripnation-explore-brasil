@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatModal from "@/components/ChatModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -39,6 +40,7 @@ export type PackagedTrip = {
   difficulty: string;
   sport: string;
   partnerships: TripPartnership;
+  guideId?: string;
 };
 
 export const packagedTrips: PackagedTrip[] = [
@@ -57,7 +59,8 @@ export const packagedTrips: PackagedTrip[] = [
       transport: "Buser",
       accommodation: "Pousada Horizonte",
       restaurant: { name: "Restaurante Sabor da Serra", discount: "15% OFF" }
-    }
+    },
+    guideId: "mariana"
   },
   {
     id: 2,
@@ -74,7 +77,8 @@ export const packagedTrips: PackagedTrip[] = [
       transport: "Expresso Brasileiro",
       accommodation: "Hotel Praia Azul",
       restaurant: { name: "Marisqueira do Porto", discount: "20% OFF" }
-    }
+    },
+    guideId: "luana"
   },
   {
     id: 3,
@@ -108,6 +112,8 @@ export type UserTrip = {
   isOpen: boolean;
   interestedCount: number;
   packageId?: number;
+  needsGuide: boolean;
+  guideId?: string;
 };
 
 type NewTripState = {
@@ -119,6 +125,7 @@ type NewTripState = {
   people: number;
   notes: string;
   isOpen: boolean;
+  needsGuide: boolean;
 };
 
 type TripFormFieldConfig = {
@@ -148,14 +155,16 @@ const initialTripState: NewTripState = {
   budget: "",
   people: 1,
   notes: "",
-  isOpen: true
+  isOpen: true,
+  needsGuide: false
 };
 
 const packagedTripEditConfig: TripFormConfig = {
   destination: { disabled: true },
   sport: { disabled: true },
   budget: { disabled: true },
-  isOpen: { disabled: true }
+  isOpen: { disabled: true },
+  needsGuide: { disabled: true }
 };
 
 const TripFormDialog = ({
@@ -190,6 +199,8 @@ const TripFormDialog = ({
   const peopleField = getFieldConfig("people");
   const notesField = getFieldConfig("notes");
   const groupTypeField = getFieldConfig("isOpen");
+  const needsGuideField = getFieldConfig("needsGuide");
+  const needsGuideSwitchId = useId();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -313,6 +324,27 @@ const TripFormDialog = ({
               />
             </div>
           ) : null}
+          {!needsGuideField.hidden ? (
+            <div className="flex items-start justify-between rounded-lg border p-4">
+              <div className="pr-4">
+                <Label htmlFor={needsGuideSwitchId} className="text-sm font-medium">
+                  Quero um guia da plataforma
+                </Label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Conectamos você com especialistas locais para tornar sua experiência ainda mais segura e completa.
+                </p>
+              </div>
+              <Switch
+                id={needsGuideSwitchId}
+                checked={trip.needsGuide}
+                onCheckedChange={checked =>
+                  onTripChange({ ...trip, needsGuide: checked })
+                }
+                disabled={needsGuideField.disabled}
+                aria-label="Alternar solicitação de guia"
+              />
+            </div>
+          ) : null}
           {!groupTypeField.hidden ? (
             <div>
               <Label>Tipo de Grupo</Label>
@@ -395,7 +427,8 @@ const Viagens = () => {
       budget: trip.budget,
       people: trip.people,
       notes: trip.notes,
-      isOpen: trip.isOpen
+      isOpen: trip.isOpen,
+      needsGuide: trip.needsGuide ?? Boolean(trip.guideId)
     });
     setEditTripConfig(trip.packageId ? packagedTripEditConfig : undefined);
   };
@@ -452,7 +485,9 @@ const Viagens = () => {
       isOpen: true,
       interestedCount: 1,
       packageId: trip.id,
-      slug: trip.slug
+      slug: trip.slug,
+      needsGuide: Boolean(trip.guideId),
+      guideId: trip.guideId
     };
 
     let feedback: "duplicate" | "added" | null = null;
@@ -486,6 +521,10 @@ const Viagens = () => {
 
   const handleNavigateToCommunity = (slug: string) => {
     navigate(`/comunidade?trip=${slug}`);
+  };
+
+  const handleNavigateToGuide = (guideId: string) => {
+    navigate(`/guias?guide=${guideId}`);
   };
 
   const handleNavigateToPayment = (trip: UserTrip) => {
@@ -564,27 +603,32 @@ const Viagens = () => {
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
-                              <div className="flex items-center space-x-3 mb-2">
+                              <div className="flex flex-wrap items-center gap-2 mb-2">
                                 <h4 className="font-semibold text-lg text-foreground">{trip.destination}</h4>
                                 <Badge variant="secondary">{trip.sport}</Badge>
+                                {trip.needsGuide ? (
+                                  <Badge variant="outline" className="border-primary bg-primary/10 text-primary">
+                                    Guia solicitado
+                                  </Badge>
+                                ) : null}
                               </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
-                              <div className="flex items-center space-x-1">
-                                <Calendar className="h-4 w-4" />
-                                <span>{trip.startDate} - {trip.endDate}</span>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                                <div className="flex items-center space-x-1">
+                                  <Calendar className="h-4 w-4" />
+                                  <span>{trip.startDate} - {trip.endDate}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <DollarSign className="h-4 w-4" />
+                                  <span>{trip.budget}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Users className="h-4 w-4" />
+                                  <span>{trip.people} pessoas</span>
+                                </div>
                               </div>
-                              <div className="flex items-center space-x-1">
-                                <DollarSign className="h-4 w-4" />
-                                <span>{trip.budget}</span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                <Users className="h-4 w-4" />
-                                <span>{trip.people} pessoas</span>
-                              </div>
-                            </div>
-                            {trip.notes && (
-                              <p className="mt-2 text-sm text-muted-foreground">{trip.notes}</p>
-                            )}
+                              {trip.notes && (
+                                <p className="mt-2 text-sm text-muted-foreground">{trip.notes}</p>
+                              )}
                               <div className="flex items-center space-x-4 mt-3">
                                 <Badge variant={trip.isOpen ? "default" : "secondary"}>
                                   {trip.isOpen ? "Grupo Aberto" : "Grupo Fechado"}
@@ -594,9 +638,23 @@ const Viagens = () => {
                                     {trip.interestedCount} pessoas interessadas
                                   </span>
                                 )}
+                                {trip.needsGuide && !trip.guideId ? (
+                                  <span className="text-sm text-muted-foreground">
+                                    Procurando guia da plataforma
+                                  </span>
+                                ) : null}
                               </div>
                             </div>
                             <div className="flex flex-col space-y-2">
+                              {trip.guideId ? (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleNavigateToGuide(trip.guideId!)}
+                                >
+                                  Ver guia
+                                </Button>
+                              ) : null}
                               {trip.isOpen && packageSlug && (
                                 <Button
                                   size="sm"
