@@ -352,7 +352,7 @@ const Pagamento = () => {
                     <div className="space-y-2 pt-3 border-t">
                       <p className="font-medium text-foreground">Detalhamento de custos</p>
                       <ul className="space-y-2">
-                        {pricingSummary?.items.map(item => (
+                        {pricingSummary?.items?.map(item => (
                           <li key={item.label} className="flex flex-wrap items-center justify-between gap-2">
                             <span>{item.label}</span>
                             <span className="font-medium text-foreground">{formatCurrency(item.amount)}</span>

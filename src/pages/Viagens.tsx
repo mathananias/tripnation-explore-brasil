@@ -589,11 +589,16 @@ const Viagens = () => {
       sport: trip.sport,
       startDate: trip.startDate,
       endDate: trip.endDate,
-      baseCost: trip.pricing.base ? trip.pricing.base.toString() : "",
-      transportCost: trip.pricing.transport ? trip.pricing.transport.toString() : "",
-      accommodationCost: trip.pricing.accommodation ? trip.pricing.accommodation.toString() : "",
-      activitiesCost: trip.pricing.activities ? trip.pricing.activities.toString() : "",
-      otherCost: trip.pricing.other ? trip.pricing.other.toString() : "",
+      baseCost: trip.pricing.base !== undefined ? String(trip.pricing.base) : "",
+      transportCost:
+        trip.pricing.transport !== undefined ? String(trip.pricing.transport) : "",
+      accommodationCost:
+        trip.pricing.accommodation !== undefined
+          ? String(trip.pricing.accommodation)
+          : "",
+      activitiesCost:
+        trip.pricing.activities !== undefined ? String(trip.pricing.activities) : "",
+      otherCost: trip.pricing.other !== undefined ? String(trip.pricing.other) : "",
       people: trip.people,
       notes: trip.notes,
       isOpen: trip.isOpen
@@ -1082,7 +1087,7 @@ const Viagens = () => {
                   <div className="rounded-lg border p-4">
                     <h4 className="font-semibold mb-3 text-foreground">Investimento</h4>
                     <ul className="space-y-2 text-sm">
-                      {selectedPackagePricing?.items.map(item => (
+                      {selectedPackagePricing?.items?.map(item => (
                         <li key={item.label} className="flex items-center justify-between">
                           <span className="text-muted-foreground">{item.label}</span>
                           <span className="font-medium text-foreground">
