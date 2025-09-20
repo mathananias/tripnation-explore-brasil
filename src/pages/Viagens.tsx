@@ -126,20 +126,7 @@ const Viagens = () => {
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<PackagedTrip | null>(null);
-  const [userTrips, setUserTrips] = useState<UserTrip[]>([
-    {
-      id: 1,
-      destination: "Chapada dos Veadeiros",
-      sport: "Trilha",
-      startDate: "2024-03-15",
-      endDate: "2024-03-18",
-      budget: "R$ 1.500",
-      people: 3,
-      notes: "Viagem em família para conhecer as cachoeiras",
-      isOpen: true,
-      interestedCount: 5
-    }
-  ]);
+  const [userTrips, setUserTrips] = useState<UserTrip[]>([]);
 
   const [newTrip, setNewTrip] = useState<NewTripState>({
     destination: "",
@@ -403,7 +390,7 @@ const Viagens = () => {
             </div>
 
             {/* Minhas Viagens */}
-            {userTrips.length > 0 && (
+            {userTrips.length > 0 ? (
               <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4 text-foreground">Minhas Viagens</h3>
                 <div className="grid gap-4">
@@ -482,6 +469,18 @@ const Viagens = () => {
                   })}
                 </div>
               </div>
+            ) : (
+              <Card className="mb-8 border-dashed border-muted bg-muted/30">
+                <CardContent className="py-10 text-center space-y-3">
+                  <MapPin aria-hidden="true" className="mx-auto h-8 w-8 text-muted-foreground" />
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-semibold text-foreground">Você ainda não tem viagens</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Crie uma nova viagem ou demonstre interesse em um pacote para vê-la aqui.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             )}
           </div>
 
