@@ -380,6 +380,21 @@ const Viagens = () => {
 
     const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
+    const createdTrip: UserTrip = {
+      id: Date.now(),
+      destination: trip.title,
+      sport: trip.sport,
+      startDate: formatDate(startDate),
+      endDate: formatDate(endDate),
+      budget: trip.price,
+      people: 1,
+      notes: trip.description,
+      isOpen: true,
+      interestedCount: 1,
+      packageId: trip.id,
+      slug: trip.slug
+    };
+
     let feedback: "duplicate" | "added" | null = null;
 
     setUserTrips(prevTrips => {
@@ -391,23 +406,7 @@ const Viagens = () => {
       }
 
       feedback = "added";
-      return [
-        ...prevTrips,
-        {
-          id: Date.now(),
-          destination: trip.title,
-          sport: trip.sport,
-          startDate: formatDate(startDate),
-          endDate: formatDate(endDate),
-          budget: trip.price,
-          people: 1,
-          notes: trip.description,
-          isOpen: true,
-          interestedCount: 1,
-          packageId: trip.id,
-          slug: trip.slug
-        }
-      ];
+      return [...prevTrips, createdTrip];
     });
 
     if (feedback === "duplicate") {
@@ -422,6 +421,7 @@ const Viagens = () => {
         title: "Viagem adicionada",
         description: "Essa viagem foi adicionada às suas viagens de interesse."
       });
+      handleOpenEditTrip(createdTrip);
     }
   };
 
