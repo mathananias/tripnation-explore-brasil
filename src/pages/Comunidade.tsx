@@ -247,18 +247,13 @@ const Comunidade = () => {
                 </p>
               )}
             </div>
-            <div className="flex justify-center md:justify-end md:flex-none">
-              <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity md:self-start shrink-0 w-full md:w-auto">
-                <Plus className="h-5 w-5 mr-2" />
-                Criar Post
-              </Button>
-            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div className="flex flex-wrap items-center gap-4 md:gap-5 mb-6">
             <Button
               variant={showOnlyReviews ? "default" : "outline"}
               size="sm"
+              className="order-1 w-full md:order-none md:w-auto"
               onClick={handleToggleReviews}
             >
               {showOnlyReviews ? "Mostrando avaliações" : "Ver apenas avaliações"}
@@ -266,7 +261,7 @@ const Comunidade = () => {
 
             {showOnlyReviews && (
               <Select value={ratingFilter} onValueChange={setRatingFilter}>
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="order-2 w-full md:order-none md:w-[200px]">
                   <SelectValue placeholder="Filtrar por nota" />
                 </SelectTrigger>
                 <SelectContent>
@@ -279,6 +274,14 @@ const Comunidade = () => {
                 </SelectContent>
               </Select>
             )}
+
+            <Button
+              size="sm"
+              className="order-3 w-full md:order-none md:w-auto bg-gradient-brasil hover:opacity-90 transition-opacity shrink-0"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Criar Post
+            </Button>
           </div>
 
           <div className="space-y-6">
