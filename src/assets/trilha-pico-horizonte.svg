@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Arte digital da Trilha do Pico do Horizonte">
+  <defs>
+    <linearGradient id="sky" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b1d3a"/>
+      <stop offset="50%" stop-color="#21466f"/>
+      <stop offset="100%" stop-color="#467b9e"/>
+    </linearGradient>
+    <linearGradient id="path" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f6d69b"/>
+      <stop offset="100%" stop-color="#a0712f"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="30%" cy="25%" r="20%">
+      <stop offset="0%" stop-color="#ffe097" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ffe097" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="480" cy="220" r="160" fill="url(#sun)"/>
+  <path d="M0,900 L200,530 L520,900 Z" fill="#19263e"/>
+  <path d="M260,900 L660,460 L1080,900 Z" fill="#22304f"/>
+  <path d="M820,900 L1220,520 L1600,900 Z" fill="#2d3c63"/>
+  <path d="M880,900 C820,700 860,560 760,400 C700,290 660,220 620,140" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="130" stroke-linecap="round"/>
+  <path d="M880,900 C820,710 860,570 760,410 C700,300 660,230 620,150" fill="none" stroke="url(#path)" stroke-width="90" stroke-linecap="round"/>
+  <text x="120" y="760" font-size="88" font-family="'Trebuchet MS', 'Montserrat', sans-serif" fill="#f8f3ea" letter-spacing="3">
+    Trilha do Pico do Horizonte
+  </text>
+</svg>
