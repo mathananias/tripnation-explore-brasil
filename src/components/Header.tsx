@@ -6,10 +6,10 @@ import { Link, NavLink } from "react-router-dom";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navItems: { label: string; to: string; end?: boolean }[] = [
-    { label: "Início", to: "/", end: true },
     { label: "Viagens", to: "/viagens" },
+    { label: "Guias", to: "/guias" },
     { label: "Comunidade", to: "/comunidade" },
-    { label: "Avaliações", to: "/avaliacoes" },
+    { label: "Chat", to: "/chat" },
     { label: "Perfil", to: "/perfil" },
   ];
 
