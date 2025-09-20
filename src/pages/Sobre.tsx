@@ -175,7 +175,11 @@ const Sobre = () => {
               <h2 className="text-3xl font-bold mb-6">Nossa Missão</h2>
               <div className="bg-gradient-brasil p-8 rounded-2xl">
                 <p className="text-2xl md:text-3xl font-bold text-white">
-                  "Porque a jornada fica melhor quando compartilhada"
+                  “Porque a{" "}
+                  <span className="bg-gradient-sunset bg-clip-text text-transparent">jornada</span>
+                  {" fica melhor quando "}
+                  <span className="bg-gradient-sunset bg-clip-text text-transparent">compartilhada</span>
+                  ”
                 </p>
               </div>
               <p className="text-lg text-muted-foreground mt-6">
