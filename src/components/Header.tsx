@@ -28,6 +28,9 @@ const Header = () => {
             <Link to="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
               Viagens
             </Link>
+            <Link to="/guias" className="text-foreground hover:text-primary transition-colors font-medium">
+              Guias
+            </Link>
             <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
               Comunidade
             </Link>
@@ -72,6 +75,9 @@ const Header = () => {
             <div className="flex flex-col space-y-4">
               <Link to="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
                 Viagens
+              </Link>
+              <Link to="/guias" className="text-foreground hover:text-primary transition-colors font-medium">
+                Guias
               </Link>
               <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
                 Comunidade
