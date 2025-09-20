@@ -99,7 +99,7 @@ const GuidesPage = () => {
       />
       <Header />
 
-      <main className="container mx-auto flex-1 px-4 py-10">
+      <main className="container mx-auto flex-1 px-4 pb-16 pt-32">
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold bg-gradient-brasil bg-clip-text text-transparent">Conheça nossos guias</h1>
