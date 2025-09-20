@@ -3,16 +3,15 @@ import { Menu, Search, MapPin } from "lucide-react";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
-const navItems: { label: string; to: string; end?: boolean }[] = [
-  { label: "Início", to: "/", end: true },
-  { label: "Viagens", to: "/viagens" },
-  { label: "Comunidade", to: "/comunidade" },
-  { label: "Avaliações", to: "/avaliacoes" },
-  { label: "Perfil", to: "/perfil" },
-];
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navItems: { label: string; to: string; end?: boolean }[] = [
+    { label: "Início", to: "/", end: true },
+    { label: "Viagens", to: "/viagens" },
+    { label: "Comunidade", to: "/comunidade" },
+    { label: "Avaliações", to: "/avaliacoes" },
+    { label: "Perfil", to: "/perfil" },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
