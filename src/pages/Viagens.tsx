@@ -163,6 +163,52 @@ const Viagens = () => {
     }
   };
 
+  const navigateToPayment = (details: {
+    title: string;
+    sport?: string;
+    startDate?: string;
+    endDate?: string;
+    duration?: string;
+    price?: string;
+    people?: number;
+    description?: string;
+    partnerships?: TripPartnership;
+    image?: string;
+    source: "custom" | "package";
+  }) => {
+    navigate("/pagamento", {
+      state: {
+        tripDetails: details
+      }
+    });
+  };
+
+  const handleConfirmPresenceFromUserTrip = (trip: UserTrip) => {
+    navigateToPayment({
+      title: trip.destination,
+      sport: trip.sport,
+      startDate: trip.startDate,
+      endDate: trip.endDate,
+      price: trip.budget,
+      people: trip.people,
+      description: trip.notes,
+      source: trip.packageId ? "package" : "custom"
+    });
+  };
+
+  const handleConfirmPresenceFromPackage = (trip: PackagedTrip) => {
+    navigateToPayment({
+      title: trip.title,
+      sport: trip.sport,
+      duration: trip.duration,
+      price: trip.price,
+      description: trip.description,
+      partnerships: trip.partnerships,
+      image: trip.image,
+      source: "package"
+    });
+  };
+
   const handlePackageInterest = (trip: PackagedTrip) => {
     const durationMatch = trip.duration.match(/\d+/);
     const durationInDays = durationMatch ? Number.parseInt(durationMatch[0], 10) : 3;
@@ -439,6 +485,13 @@ const Viagens = () => {
                               </div>
                             </div>
                             <div className="flex flex-col space-y-2">
+                              <Button
+                                size="sm"
+                                className="bg-gradient-brasil hover:opacity-90"
+                                onClick={() => handleConfirmPresenceFromUserTrip(trip)}
+                              >
+                                Confirmar presença
+                              </Button>
                               {trip.isOpen && packageSlug && (
                                 <Button
                                   size="sm"
@@ -536,6 +589,13 @@ const Viagens = () => {
                         onClick={() => setSelectedPackage(trip)}
                       >
                         Ver Detalhes
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="w-full bg-gradient-sunset text-white hover:opacity-90"
+                        onClick={() => handleConfirmPresenceFromPackage(trip)}
+                      >
+                        Confirmar presença
                       </Button>
                       <Button
                         size="sm"
@@ -647,6 +707,15 @@ const Viagens = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
+                    <Button
+                      className="w-full bg-gradient-sunset text-white hover:opacity-90"
+                      onClick={() => {
+                        handleConfirmPresenceFromPackage(selectedPackage);
+                        setSelectedPackage(null);
+                      }}
+                    >
+                      Confirmar presença
+                    </Button>
                     <Button
                       className="w-full bg-gradient-brasil hover:opacity-90"
                       onClick={() => {

@@ -17,6 +17,7 @@ const Chat = lazy(() => import("./pages/Chat"));
 const Perfil = lazy(() => import("./pages/Perfil"));
 const Sobre = lazy(() => import("./pages/Sobre"));
 const GuidesPage = lazy(() => import("./pages/GuidesPage"));
+const Pagamento = lazy(() => import("./pages/Pagamento"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/viagens" element={<Viagens />} />
+              <Route path="/pagamento" element={<Pagamento />} />
               <Route path="/comunidade" element={<Comunidade />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/perfil" element={<Perfil />} />
