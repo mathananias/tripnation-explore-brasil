@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,6 +35,7 @@ type CommunityPost = {
   likes: number;
   comments: number;
   timeAgo: string;
+  slug?: string;
 };
 
 type ReviewItem = {
@@ -49,6 +51,7 @@ type ReviewItem = {
   comment: string;
   date: string;
   images: string[];
+  slug?: string;
 };
 
 type CommunityFeedItem = CommunityPost | ReviewItem;
@@ -66,7 +69,8 @@ const communityPosts: CommunityPost[] = [
     location: "Amanhecer na Serra das Estrelas",
     likes: 120,
     comments: 15,
-    timeAgo: "2h"
+    timeAgo: "2h",
+    slug: "serra-das-estrelas"
   },
   {
     type: "comunidade",
@@ -80,7 +84,8 @@ const communityPosts: CommunityPost[] = [
     location: "Surf na Praia do Atobá",
     likes: 98,
     comments: 8,
-    timeAgo: "4h"
+    timeAgo: "4h",
+    slug: "praia-do-atoba"
   },
   {
     type: "comunidade",
@@ -136,7 +141,8 @@ const mockReviews: ReviewItem[] = [
     comment:
       "Experiência única! As ondas estavam perfeitas e o instrutor foi excepcional. Recomendo muito para quem quer aprender ou aperfeiçoar o surf.",
     date: "8 Jan 2024",
-    images: [surfPraiaImage]
+    images: [surfPraiaImage],
+    slug: "praia-do-atoba"
   },
   {
     type: "avaliacao",
@@ -164,6 +170,10 @@ const getAvatarUrl = (name: string, avatarUrl?: string) => {
 };
 
 const Comunidade = () => {
+  const [searchParams] = useSearchParams();
+  const tripFilter = searchParams.get("trip");
+  const normalizedTripFilter = tripFilter?.trim().toLowerCase() ?? "";
+  const hasTripFilter = normalizedTripFilter.length > 0;
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
   const [showOnlyReviews, setShowOnlyReviews] = useState(false);
   const [ratingFilter, setRatingFilter] = useState("all");
@@ -195,7 +205,11 @@ const Comunidade = () => {
     ));
   };
 
-  const filteredFeed = communityFeed.filter(item => {
+  const feedBySlug = hasTripFilter
+    ? communityFeed.filter(item => item.slug?.toLowerCase() === normalizedTripFilter)
+    : communityFeed;
+
+  const filteredFeed = feedBySlug.filter(item => {
     if (showOnlyReviews) {
       if (item.type !== "avaliacao") {
         return false;
@@ -208,6 +222,8 @@ const Comunidade = () => {
 
     return true;
   });
+
+  const noResultsWithSlug = hasTripFilter && filteredFeed.length === 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -223,6 +239,12 @@ const Comunidade = () => {
             <p className="text-lg text-muted-foreground">
               Compartilhe suas aventuras e inspire outros viajantes
             </p>
+            {hasTripFilter && (
+              <p className="mt-3 text-sm text-muted-foreground">
+                Mostrando conteúdos relacionados a
+                <Badge className="ml-2">{tripFilter}</Badge>
+              </p>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -252,14 +274,26 @@ const Comunidade = () => {
           </div>
 
           <div className="space-y-6">
+            {noResultsWithSlug && (
+              <Card>
+                <CardContent className="py-8 text-center text-muted-foreground">
+                  Nenhum conteúdo encontrado para a viagem selecionada.
+                </CardContent>
+              </Card>
+            )}
+
             {filteredFeed.map((item) => {
               const cardKey = `${item.type}-${item.id}`;
+              const isHighlighted = hasTripFilter && item.slug?.toLowerCase() === normalizedTripFilter;
 
               if (item.type === "comunidade") {
                 const post = item;
 
                 return (
-                  <Card key={cardKey} className="overflow-hidden">
+                  <Card
+                    key={cardKey}
+                    className={`overflow-hidden ${isHighlighted ? "border-2 border-primary shadow-lg" : ""}`}
+                  >
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
@@ -346,7 +380,10 @@ const Comunidade = () => {
               const review = item;
 
               return (
-                <Card key={cardKey} className="overflow-hidden">
+                <Card
+                  key={cardKey}
+                  className={`overflow-hidden ${isHighlighted ? "border-2 border-primary shadow-lg" : ""}`}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
