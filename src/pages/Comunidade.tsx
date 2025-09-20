@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import amanhecerSerraImage from "@/assets/amanhecer-serra-estrelas.jpg";
 import surfPraiaImage from "@/assets/surf-praia-atoba.jpg";
+import placeholderAvatar from "@/assets/placeholder.svg";
 import SEO from "@/components/SEO";
 
 const mockPosts = [
@@ -16,7 +17,7 @@ const mockPosts = [
     user: {
       name: "João R.",
       location: "RJ",
-      avatar: "/placeholder.svg"
+      avatar: placeholderAvatar
     },
     content: "Uma das melhores experiências da minha vida",
     image: amanhecerSerraImage,
@@ -30,7 +31,7 @@ const mockPosts = [
     user: {
       name: "Marina S.",
       location: "SP",
-      avatar: "/placeholder.svg"
+      avatar: placeholderAvatar
     },
     content: "Ondas perfeitas e muita energia boa",
     video: surfPraiaImage,
