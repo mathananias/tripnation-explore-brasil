@@ -59,8 +59,7 @@ const communityPosts: CommunityPost[] = [
     id: 1,
     user: {
       name: "João R.",
-      location: "RJ",
-      avatar: placeholderAvatar
+      location: "RJ"
     },
     content: "Uma das melhores experiências da minha vida",
     image: amanhecerSerraImage,
@@ -74,8 +73,7 @@ const communityPosts: CommunityPost[] = [
     id: 2,
     user: {
       name: "Marina S.",
-      location: "SP",
-      avatar: placeholderAvatar
+      location: "SP"
     },
     content: "Ondas perfeitas e muita energia boa",
     video: surfPraiaImage,
@@ -89,8 +87,7 @@ const communityPosts: CommunityPost[] = [
     id: 3,
     user: {
       name: "Camila P.",
-      location: "SP",
-      avatar: placeholderAvatar
+      location: "SP"
     },
     content: "alguém recomenda uma cidade com trilhas dentro de umas 3h de São Paulo?",
     location: "Perguntas da Comunidade",
@@ -106,8 +103,7 @@ const mockReviews: ReviewItem[] = [
     id: 1,
     user: {
       name: "Camila P.",
-      location: "SP",
-      avatar: placeholderAvatar
+      location: "SP"
     },
     destination: "Trilha do Pico do Horizonte",
     rating: 5,
@@ -120,8 +116,7 @@ const mockReviews: ReviewItem[] = [
     id: 2,
     user: {
       name: "Pedro H.",
-      location: "RJ",
-      avatar: placeholderAvatar
+      location: "RJ"
     },
     destination: "Cachoeira das Águas Claras",
     rating: 4,
@@ -134,8 +129,7 @@ const mockReviews: ReviewItem[] = [
     id: 3,
     user: {
       name: "Ana Clara M.",
-      location: "MG",
-      avatar: placeholderAvatar
+      location: "MG"
     },
     destination: "Surf na Praia do Atobá",
     rating: 5,
@@ -149,8 +143,7 @@ const mockReviews: ReviewItem[] = [
     id: 4,
     user: {
       name: "Lucas R.",
-      location: "RS",
-      avatar: placeholderAvatar
+      location: "RS"
     },
     destination: "Escalada na Chapada Encantada",
     rating: 4,
