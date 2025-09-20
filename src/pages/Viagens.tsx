@@ -95,7 +95,7 @@ export const packagedTrips: PackagedTrip[] = [
   }
 ];
 
-type UserTrip = {
+export type UserTrip = {
   id: number;
   slug?: string;
   destination: string;
@@ -429,6 +429,10 @@ const Viagens = () => {
     navigate(`/comunidade?trip=${slug}`);
   };
 
+  const handleNavigateToPayment = (trip: UserTrip) => {
+    navigate("/pagamento", { state: { tripId: trip.id, trip } });
+  };
+
   const handleDeleteTrip = (id: number) => {
     setUserTrips(userTrips.filter(trip => trip.id !== id));
   };
@@ -543,6 +547,13 @@ const Viagens = () => {
                                   Ver na Comunidade
                                 </Button>
                               )}
+                              <Button
+                                size="sm"
+                                className="bg-gradient-sunset hover:opacity-90"
+                                onClick={() => handleNavigateToPayment(trip)}
+                              >
+                                Confirmar presença
+                              </Button>
                               <div className="flex space-x-2">
                                 <Button
                                   variant="outline"
