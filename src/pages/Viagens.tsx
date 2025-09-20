@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatModal from "@/components/ChatModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,17 +27,97 @@ type TripPartnership = {
   };
 };
 
+export const DEFAULT_SERVICE_FEE_PERCENT = 0.08;
+
+export type TripPricing = {
+  base?: number;
+  transport?: number;
+  accommodation?: number;
+  activities?: number;
+  other?: number;
+  serviceFeePercent?: number;
+};
+
+const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL"
+});
+
+const percentFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "percent",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1
+});
+
+const parseCurrencyInput = (value: string): number | undefined => {
+  if (!value) {
+    return undefined;
+  }
+
+  const cleaned = value.replace(/[^0-9,.-]/g, "");
+  if (!cleaned) {
+    return undefined;
+  }
+
+  const normalized = cleaned.includes(",")
+    ? cleaned.replace(/\./g, "").replace(",", ".")
+    : cleaned.replace(/,/g, ".");
+
+  const parsed = Number.parseFloat(normalized);
+
+  return Number.isNaN(parsed) ? undefined : parsed;
+};
+
+const formatCurrency = (value?: number): string =>
+  typeof value === "number" ? currencyFormatter.format(value) : "A confirmar";
+
+export const calculateTripSubtotal = (pricing: TripPricing): number => {
+  const items = [
+    pricing.base,
+    pricing.transport,
+    pricing.accommodation,
+    pricing.activities,
+    pricing.other
+  ].filter((value): value is number => typeof value === "number");
+
+  return items.reduce((total, value) => total + value, 0);
+};
+
+export const calculateTripTotal = (pricing: TripPricing): number => {
+  const subtotal = calculateTripSubtotal(pricing);
+  const serviceFeePercent = pricing.serviceFeePercent ?? DEFAULT_SERVICE_FEE_PERCENT;
+
+  return subtotal + subtotal * serviceFeePercent;
+};
+
+const convertPricingFromState = (
+  state: NewTripState,
+  currentServiceFeePercent?: number
+): TripPricing => ({
+  base: parseCurrencyInput(state.baseCost),
+  transport: parseCurrencyInput(state.transportCost),
+  accommodation: parseCurrencyInput(state.accommodationCost),
+  activities: parseCurrencyInput(state.activitiesCost),
+  other: parseCurrencyInput(state.otherCost),
+  serviceFeePercent: currentServiceFeePercent ?? DEFAULT_SERVICE_FEE_PERCENT
+});
+
+const hasPricingInformation = (pricing: TripPricing): boolean =>
+  [pricing.base, pricing.transport, pricing.accommodation, pricing.activities, pricing.other].some(
+    value => typeof value === "number"
+  );
+
 export type PackagedTrip = {
   id: number;
   slug: string;
   title: string;
   duration: string;
-  price: string;
   description: string;
   image: string;
   rating: number;
   difficulty: string;
   sport: string;
+  pricing: TripPricing;
   partnerships: TripPartnership;
 };
 
@@ -47,12 +127,19 @@ export const packagedTrips: PackagedTrip[] = [
     slug: "serra-das-estrelas",
     title: "Trilha na Serra das Estrelas",
     duration: "3 dias",
-    price: "R$ 1.200",
     description: "Inclui guia e hospedagem simples",
     image: escaladaImage,
     rating: 4.8,
     difficulty: "Médio",
     sport: "Trilha",
+    pricing: {
+      base: 750,
+      transport: 180,
+      accommodation: 130,
+      activities: 50,
+      other: 0,
+      serviceFeePercent: DEFAULT_SERVICE_FEE_PERCENT
+    },
     partnerships: {
       transport: "Buser",
       accommodation: "Pousada Horizonte",
@@ -64,12 +151,19 @@ export const packagedTrips: PackagedTrip[] = [
     slug: "praia-do-atoba",
     title: "Surf na Praia do Atobá",
     duration: "5 dias",
-    price: "R$ 2.500",
     description: "Inclui aulas de surf e hospedagem frente-mar",
     image: surfImage,
     rating: 4.9,
     difficulty: "Iniciante",
     sport: "Surf",
+    pricing: {
+      base: 1500,
+      transport: 400,
+      accommodation: 250,
+      activities: 130,
+      other: 35,
+      serviceFeePercent: DEFAULT_SERVICE_FEE_PERCENT
+    },
     partnerships: {
       transport: "Expresso Brasileiro",
       accommodation: "Hotel Praia Azul",
@@ -81,12 +175,19 @@ export const packagedTrips: PackagedTrip[] = [
     slug: "vale-encantado",
     title: "Ciclismo no Vale Encantado",
     duration: "2 dias",
-    price: "R$ 900",
     description: "Inclui aluguel de bike e camping",
     image: bikeImage,
     rating: 4.7,
     difficulty: "Fácil",
     sport: "Ciclismo",
+    pricing: {
+      base: 500,
+      transport: 120,
+      accommodation: 100,
+      activities: 80,
+      other: 35,
+      serviceFeePercent: DEFAULT_SERVICE_FEE_PERCENT
+    },
     partnerships: {
       transport: "Viação Cometa",
       accommodation: "Camping Natureza",
@@ -102,12 +203,12 @@ export type UserTrip = {
   sport: string;
   startDate: string;
   endDate: string;
-  budget: string;
   people: number;
   notes: string;
   isOpen: boolean;
   interestedCount: number;
   packageId?: number;
+  pricing: TripPricing;
 };
 
 type NewTripState = {
@@ -115,7 +216,11 @@ type NewTripState = {
   sport: string;
   startDate: string;
   endDate: string;
-  budget: string;
+  baseCost: string;
+  transportCost: string;
+  accommodationCost: string;
+  activitiesCost: string;
+  otherCost: string;
   people: number;
   notes: string;
   isOpen: boolean;
@@ -145,7 +250,11 @@ const initialTripState: NewTripState = {
   sport: "",
   startDate: "",
   endDate: "",
-  budget: "",
+  baseCost: "",
+  transportCost: "",
+  accommodationCost: "",
+  activitiesCost: "",
+  otherCost: "",
   people: 1,
   notes: "",
   isOpen: true
@@ -154,7 +263,11 @@ const initialTripState: NewTripState = {
 const packagedTripEditConfig: TripFormConfig = {
   destination: { disabled: true },
   sport: { disabled: true },
-  budget: { disabled: true },
+  baseCost: { disabled: true },
+  transportCost: { disabled: true },
+  accommodationCost: { disabled: true },
+  activitiesCost: { disabled: true },
+  otherCost: { disabled: true },
   isOpen: { disabled: true }
 };
 
@@ -186,7 +299,11 @@ const TripFormDialog = ({
   const sportField = getFieldConfig("sport");
   const startDateField = getFieldConfig("startDate");
   const endDateField = getFieldConfig("endDate");
-  const budgetField = getFieldConfig("budget");
+  const baseCostField = getFieldConfig("baseCost");
+  const transportCostField = getFieldConfig("transportCost");
+  const accommodationCostField = getFieldConfig("accommodationCost");
+  const activitiesCostField = getFieldConfig("activitiesCost");
+  const otherCostField = getFieldConfig("otherCost");
   const peopleField = getFieldConfig("people");
   const notesField = getFieldConfig("notes");
   const groupTypeField = getFieldConfig("isOpen");
@@ -270,20 +387,6 @@ const TripFormDialog = ({
             ) : null}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {!budgetField.hidden ? (
-              <div>
-                <Label htmlFor="budget">Orçamento Estimado</Label>
-                <Input
-                  id="budget"
-                  value={trip.budget}
-                  onChange={(e) =>
-                    onTripChange({ ...trip, budget: e.target.value })
-                  }
-                  placeholder="Ex: R$ 1.500"
-                  disabled={budgetField.disabled}
-                />
-              </div>
-            ) : null}
             {!peopleField.hidden ? (
               <div>
                 <Label htmlFor="people">Número de Pessoas</Label>
@@ -297,6 +400,91 @@ const TripFormDialog = ({
                 />
               </div>
             ) : null}
+          </div>
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-foreground">Custos estimados</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {!baseCostField.hidden ? (
+                <div>
+                  <Label htmlFor="baseCost">Base da viagem</Label>
+                  <Input
+                    id="baseCost"
+                    value={trip.baseCost}
+                    onChange={(e) =>
+                      onTripChange({ ...trip, baseCost: e.target.value })
+                    }
+                    placeholder="Ex: 1500"
+                    disabled={baseCostField.disabled}
+                  />
+                </div>
+              ) : null}
+              {!transportCostField.hidden ? (
+                <div>
+                  <Label htmlFor="transportCost">Transporte</Label>
+                  <Input
+                    id="transportCost"
+                    value={trip.transportCost}
+                    onChange={(e) =>
+                      onTripChange({ ...trip, transportCost: e.target.value })
+                    }
+                    placeholder="Ex: 300"
+                    disabled={transportCostField.disabled}
+                  />
+                </div>
+              ) : null}
+              {!accommodationCostField.hidden ? (
+                <div>
+                  <Label htmlFor="accommodationCost">Hospedagem</Label>
+                  <Input
+                    id="accommodationCost"
+                    value={trip.accommodationCost}
+                    onChange={(e) =>
+                      onTripChange({
+                        ...trip,
+                        accommodationCost: e.target.value
+                      })
+                    }
+                    placeholder="Ex: 400"
+                    disabled={accommodationCostField.disabled}
+                  />
+                </div>
+              ) : null}
+              {!activitiesCostField.hidden ? (
+                <div>
+                  <Label htmlFor="activitiesCost">Atividades</Label>
+                  <Input
+                    id="activitiesCost"
+                    value={trip.activitiesCost}
+                    onChange={(e) =>
+                      onTripChange({
+                        ...trip,
+                        activitiesCost: e.target.value
+                      })
+                    }
+                    placeholder="Ex: 250"
+                    disabled={activitiesCostField.disabled}
+                  />
+                </div>
+              ) : null}
+              {!otherCostField.hidden ? (
+                <div>
+                  <Label htmlFor="otherCost">Outros custos</Label>
+                  <Input
+                    id="otherCost"
+                    value={trip.otherCost}
+                    onChange={(e) =>
+                      onTripChange({ ...trip, otherCost: e.target.value })
+                    }
+                    placeholder="Ex: 150"
+                    disabled={otherCostField.disabled}
+                  />
+                </div>
+              ) : null}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Valores podem ser aproximados. Caso não saiba algum custo, deixe em branco e
+              ajustaremos depois.
+            </p>
           </div>
           {!notesField.hidden ? (
             <div>
@@ -372,12 +560,21 @@ const Viagens = () => {
 
   const handleCreateTrip = () => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
+      const pricing = convertPricingFromState(newTrip);
+
       setUserTrips(prevTrips => [
         ...prevTrips,
         {
-          ...newTrip,
           id: Date.now(),
-          interestedCount: 0
+          destination: newTrip.destination,
+          sport: newTrip.sport,
+          startDate: newTrip.startDate,
+          endDate: newTrip.endDate,
+          people: newTrip.people,
+          notes: newTrip.notes,
+          isOpen: newTrip.isOpen,
+          interestedCount: 0,
+          pricing
         }
       ]);
       setNewTrip(initialTripState);
@@ -392,7 +589,11 @@ const Viagens = () => {
       sport: trip.sport,
       startDate: trip.startDate,
       endDate: trip.endDate,
-      budget: trip.budget,
+      baseCost: trip.pricing.base ? trip.pricing.base.toString() : "",
+      transportCost: trip.pricing.transport ? trip.pricing.transport.toString() : "",
+      accommodationCost: trip.pricing.accommodation ? trip.pricing.accommodation.toString() : "",
+      activitiesCost: trip.pricing.activities ? trip.pricing.activities.toString() : "",
+      otherCost: trip.pricing.other ? trip.pricing.other.toString() : "",
       people: trip.people,
       notes: trip.notes,
       isOpen: trip.isOpen
@@ -417,12 +618,21 @@ const Viagens = () => {
       editTripForm.startDate &&
       editTripForm.endDate
     ) {
+      const pricing = convertPricingFromState(editTripForm, editingTrip.pricing.serviceFeePercent);
+
       setUserTrips(prevTrips =>
         prevTrips.map(trip =>
           trip.id === editingTrip.id
             ? {
                 ...trip,
-                ...editTripForm
+                destination: editTripForm.destination,
+                sport: editTripForm.sport,
+                startDate: editTripForm.startDate,
+                endDate: editTripForm.endDate,
+                people: editTripForm.people,
+                notes: editTripForm.notes,
+                isOpen: editTripForm.isOpen,
+                pricing
               }
             : trip
         )
@@ -446,7 +656,7 @@ const Viagens = () => {
       sport: trip.sport,
       startDate: formatDate(startDate),
       endDate: formatDate(endDate),
-      budget: trip.price,
+      pricing: { ...trip.pricing },
       people: 1,
       notes: trip.description,
       isOpen: true,
@@ -510,6 +720,28 @@ const Viagens = () => {
     ));
   };
 
+  const selectedPackagePricing = useMemo(() => {
+    if (!selectedPackage) {
+      return null;
+    }
+
+    const subtotal = calculateTripSubtotal(selectedPackage.pricing);
+    const serviceFeePercent =
+      selectedPackage.pricing.serviceFeePercent ?? DEFAULT_SERVICE_FEE_PERCENT;
+    const serviceFeeAmount = subtotal * serviceFeePercent;
+    const total = subtotal + serviceFeeAmount;
+
+    const items = [
+      { label: "Base da viagem", amount: selectedPackage.pricing.base },
+      { label: "Transporte", amount: selectedPackage.pricing.transport },
+      { label: "Hospedagem", amount: selectedPackage.pricing.accommodation },
+      { label: "Atividades", amount: selectedPackage.pricing.activities },
+      { label: "Outros custos", amount: selectedPackage.pricing.other }
+    ];
+
+    return { subtotal, serviceFeePercent, serviceFeeAmount, total, items };
+  }, [selectedPackage]);
+
   return (
     <div className="min-h-screen bg-background">
       <SEO title="Viagens | TripNation" description="Explore pacotes e crie suas próprias viagens pelo Brasil." />
@@ -559,6 +791,14 @@ const Viagens = () => {
                         ? packagedTrips.find(pkg => pkg.id === trip.packageId)?.slug
                         : undefined);
 
+                    const dateLabel =
+                      trip.startDate && trip.endDate
+                        ? `${trip.startDate} - ${trip.endDate}`
+                        : "A confirmar";
+                    const totalAmount = hasPricingInformation(trip.pricing)
+                      ? calculateTripTotal(trip.pricing)
+                      : undefined;
+
                     return (
                       <Card key={trip.id} className="border-l-4 border-l-primary">
                         <CardContent className="p-4">
@@ -568,14 +808,14 @@ const Viagens = () => {
                                 <h4 className="font-semibold text-lg text-foreground">{trip.destination}</h4>
                                 <Badge variant="secondary">{trip.sport}</Badge>
                               </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
                               <div className="flex items-center space-x-1">
                                 <Calendar className="h-4 w-4" />
-                                <span>{trip.startDate} - {trip.endDate}</span>
+                                <span>{dateLabel}</span>
                               </div>
                               <div className="flex items-center space-x-1">
                                 <DollarSign className="h-4 w-4" />
-                                <span>{trip.budget}</span>
+                                <span>{formatCurrency(totalAmount)}</span>
                               </div>
                               <div className="flex items-center space-x-1">
                                 <Users className="h-4 w-4" />
@@ -657,13 +897,19 @@ const Viagens = () => {
           <div>
             <h2 className="text-2xl font-bold mb-6 text-foreground">Pacotes de Viagens</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {packagedTrips.map((trip) => (
-                <Card key={trip.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group">
-                  <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={trip.image} 
-                      alt={`Pacote ${trip.title}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              {packagedTrips.map((trip) => {
+                const totalAmount = calculateTripTotal(trip.pricing);
+
+                return (
+                  <Card
+                    key={trip.id}
+                    className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group"
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={trip.image}
+                        alt={`Pacote ${trip.title}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-3 right-3">
                       <Badge variant="secondary" className="bg-white/90 text-primary">
@@ -672,11 +918,11 @@ const Viagens = () => {
                     </div>
                     <div className="absolute top-3 left-3">
                       <Badge className="bg-accent">
-                        {trip.price}
+                        {formatCurrency(totalAmount)}
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <CardContent className="p-4">
                     <div className="flex items-start gap-2 mb-2">
                       <MapPin aria-hidden="true" className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -717,7 +963,8 @@ const Viagens = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -787,7 +1034,9 @@ const Viagens = () => {
                       </Badge>
                     </div>
                     <div className="absolute top-3 left-3">
-                      <Badge className="bg-accent">{selectedPackage.price}</Badge>
+                      <Badge className="bg-accent">
+                        {formatCurrency(selectedPackagePricing?.total)}
+                      </Badge>
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -829,6 +1078,33 @@ const Viagens = () => {
                         {selectedPackage.partnerships.restaurant.name} ({selectedPackage.partnerships.restaurant.discount})
                       </p>
                     </div>
+                  </div>
+                  <div className="rounded-lg border p-4">
+                    <h4 className="font-semibold mb-3 text-foreground">Investimento</h4>
+                    <ul className="space-y-2 text-sm">
+                      {selectedPackagePricing?.items.map(item => (
+                        <li key={item.label} className="flex items-center justify-between">
+                          <span className="text-muted-foreground">{item.label}</span>
+                          <span className="font-medium text-foreground">
+                            {formatCurrency(item.amount)}
+                          </span>
+                        </li>
+                      ))}
+                      <li className="flex items-center justify-between pt-2 border-t text-sm">
+                        <span className="text-muted-foreground">Taxa de serviço ({
+                          selectedPackagePricing
+                            ? percentFormatter.format(selectedPackagePricing.serviceFeePercent)
+                            : percentFormatter.format(DEFAULT_SERVICE_FEE_PERCENT)
+                        })</span>
+                        <span className="font-medium text-foreground">
+                          {formatCurrency(selectedPackagePricing?.serviceFeeAmount)}
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between pt-2 text-base font-semibold text-foreground">
+                        <span>Total</span>
+                        <span>{formatCurrency(selectedPackagePricing?.total)}</span>
+                      </li>
+                    </ul>
                   </div>
                   <div className="space-y-2">
                     <Button

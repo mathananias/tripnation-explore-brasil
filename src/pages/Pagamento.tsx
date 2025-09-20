@@ -12,7 +12,14 @@ import {
   RadioGroup,
   RadioGroupItem
 } from "@/components/ui/radio-group";
-import { packagedTrips, PackagedTrip, UserTrip } from "./Viagens";
+import {
+  packagedTrips,
+  PackagedTrip,
+  TripPricing,
+  UserTrip,
+  calculateTripSubtotal,
+  DEFAULT_SERVICE_FEE_PERCENT
+} from "./Viagens";
 
 type CheckoutState = {
   tripId?: number;
@@ -50,16 +57,116 @@ const Pagamento = () => {
   const tripPeriod = trip
     ? isPackagedTrip(trip)
       ? trip.duration
-      : `${trip.startDate} - ${trip.endDate}`
+      : trip.startDate && trip.endDate
+        ? `${trip.startDate} - ${trip.endDate}`
+        : ""
     : "";
 
-  const tripPrice = trip
-    ? isPackagedTrip(trip)
-      ? trip.price
-      : trip.budget
-    : "";
+  const currencyFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      }),
+    []
+  );
+
+  const percentFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat("pt-BR", {
+        style: "percent",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1
+      }),
+    []
+  );
+
+  const formatCurrency = (value?: number) =>
+    typeof value === "number" && !Number.isNaN(value)
+      ? currencyFormatter.format(value)
+      : "A confirmar";
+
+  const normalizeAmount = (value: number | string | undefined): number | undefined => {
+    if (typeof value === "number" && !Number.isNaN(value)) {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      const cleaned = value.replace(/[^0-9,.-]/g, "");
+
+      if (!cleaned) {
+        return undefined;
+      }
+
+      const normalized = cleaned.includes(",")
+        ? cleaned.replace(/\./g, "").replace(",", ".")
+        : cleaned.replace(/,/g, ".");
+
+      const parsed = Number.parseFloat(normalized);
+
+      return Number.isNaN(parsed) ? undefined : parsed;
+    }
+
+    return undefined;
+  };
+
+  const pricing = trip ? (isPackagedTrip(trip) ? trip.pricing : trip.pricing) : null;
+
+  const normalizedPricing = useMemo(() => {
+    if (!pricing) {
+      return null;
+    }
+
+    return {
+      base: normalizeAmount(pricing.base),
+      transport: normalizeAmount(pricing.transport),
+      accommodation: normalizeAmount(pricing.accommodation),
+      activities: normalizeAmount(pricing.activities),
+      other: normalizeAmount(pricing.other),
+      serviceFeePercent: pricing.serviceFeePercent
+    } satisfies TripPricing;
+  }, [pricing]);
+
+  const pricingSummary = useMemo(() => {
+    if (!normalizedPricing) {
+      return null;
+    }
+
+    const subtotal = calculateTripSubtotal(normalizedPricing);
+    const serviceFeePercent =
+      normalizedPricing.serviceFeePercent ?? DEFAULT_SERVICE_FEE_PERCENT;
+    const serviceFeeAmount = subtotal * serviceFeePercent;
+    const total = subtotal + serviceFeeAmount;
+
+    const items = [
+      { label: "Base da viagem", amount: normalizedPricing.base },
+      { label: "Transporte", amount: normalizedPricing.transport },
+      { label: "Hospedagem", amount: normalizedPricing.accommodation },
+      { label: "Atividades", amount: normalizedPricing.activities },
+      { label: "Outros custos", amount: normalizedPricing.other }
+    ];
+
+    const hasAnyItem = items.some(item => typeof item.amount === "number");
+
+    return {
+      items,
+      subtotal,
+      serviceFeePercent,
+      serviceFeeAmount,
+      total,
+      hasAnyItem
+    };
+  }, [normalizedPricing]);
 
   const participantCount = trip && "people" in trip ? trip.people : 1;
+
+  const totalDisplayAmount = pricingSummary?.hasAnyItem
+    ? pricingSummary.total
+    : undefined;
+
+  const displayTripTitle = tripTitle || "A confirmar";
+  const displayTripPeriod = tripPeriod || "A confirmar";
+  const displayParticipants = participantCount ? `${participantCount} pessoa(s)` : "A confirmar";
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,8 +178,8 @@ const Pagamento = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+            <div className="space-y-2">
               <h1 className="text-3xl font-bold text-foreground">Checkout da viagem</h1>
               <p className="text-muted-foreground">
                 Confirme sua presença preenchendo os dados abaixo e escolhendo a melhor forma de pagamento.
@@ -212,17 +319,17 @@ const Pagamento = () => {
                     <CardTitle className="text-xl text-foreground">Resumo da viagem</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4 text-sm text-muted-foreground">
-                    <div className="flex items-center justify-between text-foreground">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-foreground">
                       <span className="font-medium">Viagem</span>
-                      <span>{tripTitle}</span>
+                      <span className="text-right">{displayTripTitle}</span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <span>Período</span>
-                      <span>{tripPeriod}</span>
+                      <span className="text-right">{displayTripPeriod}</span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <span>Participantes</span>
-                      <span>{participantCount} pessoa(s)</span>
+                      <span className="text-right">{displayParticipants}</span>
                     </div>
                     {"notes" in trip && trip.notes ? (
                       <div>
@@ -242,9 +349,44 @@ const Pagamento = () => {
                         </ul>
                       </div>
                     ) : null}
-                    <div className="flex items-center justify-between pt-2 text-base font-semibold text-foreground">
-                      <span>Total</span>
-                      <span>{tripPrice}</span>
+                    <div className="space-y-2 pt-3 border-t">
+                      <p className="font-medium text-foreground">Detalhamento de custos</p>
+                      <ul className="space-y-2">
+                        {pricingSummary?.items.map(item => (
+                          <li key={item.label} className="flex flex-wrap items-center justify-between gap-2">
+                            <span>{item.label}</span>
+                            <span className="font-medium text-foreground">{formatCurrency(item.amount)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span>Subtotal</span>
+                        <span className="font-medium text-foreground">
+                          {formatCurrency(
+                            pricingSummary?.hasAnyItem ? pricingSummary?.subtotal : undefined
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span>
+                          Taxa de serviço (
+                          {pricingSummary
+                            ? percentFormatter.format(pricingSummary.serviceFeePercent)
+                            : percentFormatter.format(DEFAULT_SERVICE_FEE_PERCENT)}
+                          )
+                        </span>
+                        <span className="font-medium text-foreground">
+                          {formatCurrency(
+                            pricingSummary?.hasAnyItem
+                              ? pricingSummary.serviceFeeAmount
+                              : undefined
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-base font-semibold text-foreground">
+                        <span>Total</span>
+                        <span>{formatCurrency(totalDisplayAmount)}</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
