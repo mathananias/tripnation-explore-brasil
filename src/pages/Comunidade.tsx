@@ -233,7 +233,7 @@ const Comunidade = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-8">
-            <div className="text-center md:text-left">
+            <div className="text-center md:text-left md:flex-1">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-laranja to-amarelo bg-clip-text text-transparent mb-4">
                 Comunidade TripNation
               </h1>
@@ -247,8 +247,8 @@ const Comunidade = () => {
                 </p>
               )}
             </div>
-            <div className="flex justify-center md:justify-end">
-              <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity md:self-start">
+            <div className="flex justify-center md:justify-end md:flex-none">
+              <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity md:self-start shrink-0 w-full md:w-auto">
                 <Plus className="h-5 w-5 mr-2" />
                 Criar Post
               </Button>
