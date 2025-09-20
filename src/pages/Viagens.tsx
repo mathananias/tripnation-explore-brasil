@@ -125,6 +125,7 @@ const Viagens = () => {
   const navigate = useNavigate();
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<PackagedTrip | null>(null);
   const [userTrips, setUserTrips] = useState<UserTrip[]>([
     {
       id: 1,
@@ -242,7 +243,11 @@ const Viagens = () => {
       <Star
         key={i}
         aria-hidden="true"
-        className={`h-4 w-4 ${i < Math.floor(rating) ? "fill-yellow text-yellow" : "text-muted"}`}
+        className={`h-4 w-4 ${
+          i < Math.floor(rating)
+            ? "fill-yellow-400 text-yellow-400"
+            : "text-muted-foreground"
+        }`}
       />
     ));
   };
@@ -529,9 +534,9 @@ const Viagens = () => {
                       <Button
                         size="sm"
                         className="w-full bg-gradient-brasil hover:opacity-90"
-                        onClick={() => handlePackageInterest(trip)}
+                        onClick={() => setSelectedPackage(trip)}
                       >
-                        Tenho Interesse
+                        Ver Detalhes
                       </Button>
                       <Button
                         size="sm"
@@ -569,6 +574,106 @@ const Viagens = () => {
         </div>
       </main>
 
+      <Dialog
+        open={!!selectedPackage}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedPackage(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-3xl">
+          {selectedPackage && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-semibold text-foreground">
+                  {selectedPackage.title}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-6 md:grid-cols-[1.5fr_1fr]">
+                <div className="space-y-4">
+                  <div className="relative h-56 w-full overflow-hidden rounded-lg">
+                    <img
+                      src={selectedPackage.image}
+                      alt={`Imagem do pacote ${selectedPackage.title}`}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute top-3 right-3">
+                      <Badge variant="secondary" className="bg-white/90 text-primary">
+                        {selectedPackage.duration}
+                      </Badge>
+                    </div>
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-accent">{selectedPackage.price}</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {selectedPackage.description}
+                  </p>
+                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2 text-foreground">
+                      <span className="flex items-center gap-1">{renderStars(selectedPackage.rating)}</span>
+                      <span className="font-medium">{selectedPackage.rating.toFixed(1)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" aria-hidden="true" />
+                      <span>{selectedPackage.duration}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4" aria-hidden="true" />
+                      <span>Dificuldade: {selectedPackage.difficulty}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" aria-hidden="true" />
+                      <span>Esporte: {selectedPackage.sport}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="font-semibold mb-2 text-foreground">Parcerias</h4>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <p>
+                        <span className="font-medium text-foreground">Transporte:</span>{" "}
+                        {selectedPackage.partnerships.transport}
+                      </p>
+                      <p>
+                        <span className="font-medium text-foreground">Hospedagem:</span>{" "}
+                        {selectedPackage.partnerships.accommodation}
+                      </p>
+                      <p>
+                        <span className="font-medium text-foreground">Restaurante:</span>{" "}
+                        {selectedPackage.partnerships.restaurant.name} ({selectedPackage.partnerships.restaurant.discount})
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Button
+                      className="w-full bg-gradient-brasil hover:opacity-90"
+                      onClick={() => {
+                        handlePackageInterest(selectedPackage);
+                        setSelectedPackage(null);
+                      }}
+                    >
+                      Tenho Interesse
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        handleNavigateToCommunity(selectedPackage.slug);
+                        setSelectedPackage(null);
+                      }}
+                    >
+                      Ver na Comunidade
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
       <ChatModal isOpen={isChatOpen} onOpenChange={setIsChatOpen} />
       
       <Footer />
