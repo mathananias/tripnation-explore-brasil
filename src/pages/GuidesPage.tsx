@@ -29,7 +29,7 @@ interface Guide {
 const guides: Guide[] = [
   {
     id: "joao",
-    name: "João Silva",
+    name: "Maria Silva",
     location: "Manaus, AM",
     description: "Especialista em expedições pela floresta amazônica e culturas ribeirinhas.",
     photo: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=256&q=80"
