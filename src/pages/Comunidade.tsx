@@ -1,6 +1,18 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +31,7 @@ import surfPraiaImage from "@/assets/surf-praia-atoba.jpg";
 import trilhaPicoHorizonte from "@/assets/trilha-pico-horizonte.svg";
 import escalaChapada from "@/assets/escalada-chapada.jpg";
 import SEO from "@/components/SEO";
+import { toast } from "@/hooks/use-toast";
 
 type CommunityPost = {
   type: "comunidade";
@@ -55,6 +68,14 @@ type ReviewItem = {
 };
 
 type CommunityFeedItem = CommunityPost | ReviewItem;
+
+type NewPostFormState = {
+  title: string;
+  content: string;
+  location: string;
+  tags: string;
+  media: File | null;
+};
 
 const communityPosts: CommunityPost[] = [
   {
@@ -177,6 +198,88 @@ const Comunidade = () => {
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
   const [showOnlyReviews, setShowOnlyReviews] = useState(false);
   const [ratingFilter, setRatingFilter] = useState("all");
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isSubmittingPost, setIsSubmittingPost] = useState(false);
+  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+  const [newPost, setNewPost] = useState<NewPostFormState>({
+    title: "",
+    content: "",
+    location: "",
+    tags: "",
+    media: null
+  });
+
+  const resetNewPostForm = () => {
+    setNewPost({ title: "", content: "", location: "", tags: "", media: null });
+    setMediaPreview(null);
+  };
+
+  const handleCreatePostDialogChange = (open: boolean) => {
+    setIsCreatePostOpen(open);
+
+    if (!open) {
+      resetNewPostForm();
+    }
+  };
+
+  const handleMediaChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    setNewPost(prev => ({ ...prev, media: file }));
+    setMediaPreview(previousPreview => {
+      if (previousPreview) {
+        URL.revokeObjectURL(previousPreview);
+      }
+
+      if (file) {
+        return URL.createObjectURL(file);
+      }
+
+      return null;
+    });
+  };
+
+  const handleCreatePost = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!newPost.content.trim()) {
+      toast({
+        title: "Conteúdo obrigatório",
+        description: "Compartilhe um texto ou história para criar seu post."
+      });
+      return;
+    }
+
+    try {
+      setIsSubmittingPost(true);
+
+      // TODO: Integrar com Supabase/API real para criar o post
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      toast({
+        title: "Post criado com sucesso!",
+        description: "Sua aventura foi compartilhada com a comunidade."
+      });
+
+      handleCreatePostDialogChange(false);
+    } catch (error) {
+      console.error("Erro ao criar post", error);
+      toast({
+        title: "Não foi possível criar o post",
+        description: "Tente novamente em instantes.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmittingPost(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (mediaPreview) {
+        URL.revokeObjectURL(mediaPreview);
+      }
+    };
+  }, [mediaPreview]);
 
   const handleToggleReviews = () => {
     setShowOnlyReviews(prev => {
@@ -248,10 +351,115 @@ const Comunidade = () => {
               )}
             </div>
             <div className="flex justify-center md:justify-end md:flex-none">
-              <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity md:self-start shrink-0 w-full md:w-auto">
-                <Plus className="h-5 w-5 mr-2" />
-                Criar Post
-              </Button>
+              <Dialog open={isCreatePostOpen} onOpenChange={handleCreatePostDialogChange}>
+                <DialogTrigger asChild>
+                  <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity md:self-start shrink-0 w-full md:w-auto">
+                    <Plus className="h-5 w-5 mr-2" />
+                    Criar Post
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <form onSubmit={handleCreatePost} className="space-y-6">
+                    <DialogHeader>
+                      <DialogTitle>Compartilhar uma nova aventura</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="post-title">Título (opcional)</Label>
+                        <Input
+                          id="post-title"
+                          placeholder="Ex: Trilha inesquecível em Minas Gerais"
+                          value={newPost.title}
+                          onChange={event =>
+                            setNewPost(prev => ({ ...prev, title: event.target.value }))
+                          }
+                          disabled={isSubmittingPost}
+                        />
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label htmlFor="post-content">Conteúdo</Label>
+                        <Textarea
+                          id="post-content"
+                          placeholder="Conte como foi sua experiência, dicas do local e impressões gerais..."
+                          value={newPost.content}
+                          onChange={event =>
+                            setNewPost(prev => ({ ...prev, content: event.target.value }))
+                          }
+                          disabled={isSubmittingPost}
+                          rows={5}
+                        />
+                      </div>
+
+                      <div className="grid gap-2 md:grid-cols-2">
+                        <div className="grid gap-2">
+                          <Label htmlFor="post-location">Local ou experiência</Label>
+                          <Input
+                            id="post-location"
+                            placeholder="Ex: Chapada dos Veadeiros"
+                            value={newPost.location}
+                            onChange={event =>
+                              setNewPost(prev => ({ ...prev, location: event.target.value }))
+                            }
+                            disabled={isSubmittingPost}
+                          />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="post-tags">Tags</Label>
+                          <Input
+                            id="post-tags"
+                            placeholder="Ex: #trilha #natureza"
+                            value={newPost.tags}
+                            onChange={event =>
+                              setNewPost(prev => ({ ...prev, tags: event.target.value }))
+                            }
+                            disabled={isSubmittingPost}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label htmlFor="post-media">Foto ou vídeo</Label>
+                        <Input
+                          id="post-media"
+                          type="file"
+                          accept="image/*,video/*"
+                          onChange={handleMediaChange}
+                          disabled={isSubmittingPost}
+                        />
+                        {mediaPreview && (
+                          <div className="mt-2">
+                            <p className="text-sm text-muted-foreground mb-2">Pré-visualização</p>
+                            <div className="relative w-full overflow-hidden rounded-lg border bg-muted/20">
+                              <img
+                                src={mediaPreview}
+                                alt="Pré-visualização do upload"
+                                className="h-48 w-full object-cover"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={isSubmittingPost}
+                        >
+                          Cancelar
+                        </Button>
+                      </DialogClose>
+                      <Button type="submit" disabled={isSubmittingPost}>
+                        {isSubmittingPost ? "Publicando..." : "Publicar"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
 
