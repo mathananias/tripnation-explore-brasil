@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -11,6 +11,18 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Heart, MessageCircle, Share2, PlayCircle, Star, Plus } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -19,6 +31,7 @@ import surfPraiaImage from "@/assets/surf-praia-atoba.jpg";
 import trilhaPicoHorizonte from "@/assets/trilha-pico-horizonte.svg";
 import escalaChapada from "@/assets/escalada-chapada.jpg";
 import SEO from "@/components/SEO";
+import { toast } from "@/hooks/use-toast";
 
 type CommunityPost = {
   type: "comunidade";
@@ -169,6 +182,20 @@ const getAvatarUrl = (name: string, avatarUrl?: string) => {
   return `https://i.pravatar.cc/150?u=${encodeURIComponent(name)}`;
 };
 
+type PostFormState = {
+  title: string;
+  location: string;
+  content: string;
+  tags: string;
+};
+
+const initialPostFormState: PostFormState = {
+  title: "",
+  location: "",
+  content: "",
+  tags: ""
+};
+
 const Comunidade = () => {
   const [searchParams] = useSearchParams();
   const tripFilter = searchParams.get("trip");
@@ -177,6 +204,50 @@ const Comunidade = () => {
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
   const [showOnlyReviews, setShowOnlyReviews] = useState(false);
   const [ratingFilter, setRatingFilter] = useState("all");
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [postForm, setPostForm] = useState<PostFormState>(initialPostFormState);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [isSubmittingPost, setIsSubmittingPost] = useState(false);
+
+  const handleResetPostForm = () => {
+    setPostForm(initialPostFormState);
+    setMediaFile(null);
+    setIsSubmittingPost(false);
+  };
+
+  const handlePostFieldChange = (field: keyof PostFormState, value: string) => {
+    setPostForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleMediaChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    setMediaFile(file);
+  };
+
+  const handleSubmitNewPost = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmittingPost(true);
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      toast({
+        title: "Post criado com sucesso!",
+        description: "Seu conteúdo foi enviado para análise e será publicado em breve."
+      });
+
+      handleResetPostForm();
+      setIsCreatePostOpen(false);
+    } catch (error) {
+      console.error("Erro ao criar post", error);
+      toast({
+        title: "Não foi possível criar o post",
+        description: "Tente novamente em instantes.",
+        variant: "destructive"
+      });
+      setIsSubmittingPost(false);
+    }
+  };
 
   const handleToggleReviews = () => {
     setShowOnlyReviews(prev => {
@@ -275,13 +346,113 @@ const Comunidade = () => {
               </Select>
             )}
 
-            <Button
-              size="sm"
-              className="order-3 w-full md:order-none md:w-auto bg-gradient-brasil hover:opacity-90 transition-opacity shrink-0"
+            <Dialog
+              open={isCreatePostOpen}
+              onOpenChange={(open) => {
+                setIsCreatePostOpen(open);
+                if (!open) {
+                  handleResetPostForm();
+                }
+              }}
             >
-              <Plus className="h-5 w-5 mr-2" />
-              Criar Post
-            </Button>
+              <DialogTrigger asChild>
+                <Button
+                  size="sm"
+                  className="order-3 w-full md:order-none md:w-auto bg-gradient-brasil hover:opacity-90 transition-opacity shrink-0"
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  Criar Post
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Compartilhe sua aventura</DialogTitle>
+                  <DialogDescription>
+                    Preencha os detalhes da sua experiência para inspirar outros viajantes da comunidade.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <form className="space-y-4" onSubmit={handleSubmitNewPost}>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="post-title">Título do post</Label>
+                      <Input
+                        id="post-title"
+                        placeholder="Ex: Amanhecer inesquecível"
+                        value={postForm.title}
+                        onChange={(event) => handlePostFieldChange("title", event.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="post-location">Local</Label>
+                      <Input
+                        id="post-location"
+                        placeholder="Cidade / destino"
+                        value={postForm.location}
+                        onChange={(event) => handlePostFieldChange("location", event.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="post-content">Descrição</Label>
+                    <Textarea
+                      id="post-content"
+                      placeholder="Conte para a comunidade como foi a experiência"
+                      value={postForm.content}
+                      onChange={(event) => handlePostFieldChange("content", event.target.value)}
+                      required
+                      rows={5}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="post-tags">Tags (opcional)</Label>
+                    <Input
+                      id="post-tags"
+                      placeholder="Ex: trilha, surf, camping"
+                      value={postForm.tags}
+                      onChange={(event) => handlePostFieldChange("tags", event.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Separe as tags por vírgulas para ajudar outros viajantes a encontrarem seu post.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="post-media">Foto ou vídeo</Label>
+                    <Input
+                      id="post-media"
+                      type="file"
+                      accept="image/*,video/*"
+                      onChange={handleMediaChange}
+                    />
+                    {mediaFile && (
+                      <p className="text-xs text-muted-foreground">Arquivo selecionado: {mediaFile.name}</p>
+                    )}
+                  </div>
+
+                  <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsCreatePostOpen(false);
+                        handleResetPostForm();
+                      }}
+                      disabled={isSubmittingPost}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button type="submit" disabled={isSubmittingPost} className="bg-gradient-brasil hover:opacity-90">
+                      {isSubmittingPost ? "Enviando..." : "Publicar post"}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
 
           <div className="space-y-6">
