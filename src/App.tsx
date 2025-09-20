@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -61,7 +61,6 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/viagens" element={<Viagens />} />
               <Route path="/comunidade" element={<Comunidade />} />
-              <Route path="/avaliacoes" element={<Navigate to="/comunidade" replace />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/sobre" element={<Sobre />} />
