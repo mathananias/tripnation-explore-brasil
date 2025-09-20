@@ -2,12 +2,16 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Badge } from "@/components/ui/badge";
 import { Send, Phone, Video, MoreVertical } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+import lucasMendonca from "@/assets/matheus-ananias.jpg";
+import marinaCosta from "@/assets/giovana-moises.jpg";
+import rafaelSantos from "@/assets/gustavo-martinez.jpg";
 
 const mockMessages = [
   {
@@ -100,7 +104,7 @@ const Chat = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Avatar>
-                    <AvatarImage src="/placeholder.svg" />
+                    <OptimizedImage src={lucasMendonca} alt="Lucas Mendonça" className="w-full h-full object-cover" />
                     <AvatarFallback>LM</AvatarFallback>
                   </Avatar>
                   <div>
@@ -148,7 +152,7 @@ const Chat = () => {
                   </div>
                   {!message.isOwn && (
                     <Avatar className="w-8 h-8 order-1 mr-2">
-                      <AvatarImage src="/placeholder.svg" />
+                      <OptimizedImage src={lucasMendonca} alt="Lucas Mendonça" className="w-full h-full object-cover" />
                       <AvatarFallback>LM</AvatarFallback>
                     </Avatar>
                   )}
@@ -207,7 +211,7 @@ const Chat = () => {
               <CardContent className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <Avatar>
-                    <AvatarImage src="/placeholder.svg" />
+                    <OptimizedImage src={marinaCosta} alt="Marina Costa" className="w-full h-full object-cover" />
                     <AvatarFallback>MC</AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
@@ -218,7 +222,7 @@ const Chat = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Avatar>
-                    <AvatarImage src="/placeholder.svg" />
+                    <OptimizedImage src={rafaelSantos} alt="Rafael Santos" className="w-full h-full object-cover" />
                     <AvatarFallback>RS</AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
