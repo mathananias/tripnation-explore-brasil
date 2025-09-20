@@ -25,7 +25,7 @@ type CommunityPost = {
   user: {
     name: string;
     location: string;
-    avatar: string;
+    avatar?: string;
   };
   content: string;
   image?: string;
@@ -42,7 +42,7 @@ type ReviewItem = {
   user: {
     name: string;
     location: string;
-    avatar: string;
+    avatar?: string;
   };
   destination: string;
   rating: number;
@@ -162,6 +162,14 @@ const mockReviews: ReviewItem[] = [
 
 const communityFeed: CommunityFeedItem[] = [...communityPosts, ...mockReviews];
 
+const getAvatarUrl = (name: string, avatarUrl?: string) => {
+  if (avatarUrl && avatarUrl.trim().length > 0) {
+    return avatarUrl;
+  }
+
+  return `https://i.pravatar.cc/150?u=${encodeURIComponent(name)}`;
+};
+
 const Comunidade = () => {
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
   const [showOnlyReviews, setShowOnlyReviews] = useState(false);
@@ -263,7 +271,10 @@ const Comunidade = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           <Avatar>
-                            <AvatarImage src={post.user.avatar} />
+                            <AvatarImage
+                              src={getAvatarUrl(post.user.name, post.user.avatar)}
+                              alt={`Avatar de ${post.user.name}`}
+                            />
                             <AvatarFallback>
                               {post.user.name.split(" ").map(n => n[0]).join("")}
                             </AvatarFallback>
@@ -347,7 +358,10 @@ const Comunidade = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <Avatar>
-                          <AvatarImage src={review.user.avatar} />
+                          <AvatarImage
+                            src={getAvatarUrl(review.user.name, review.user.avatar)}
+                            alt={`Avatar de ${review.user.name}`}
+                          />
                           <AvatarFallback>
                             {review.user.name.split(" ").map(n => n[0]).join("")}
                           </AvatarFallback>
