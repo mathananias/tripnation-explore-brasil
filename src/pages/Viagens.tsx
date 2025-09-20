@@ -8,7 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
 import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -127,6 +134,19 @@ const Viagens = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<PackagedTrip | null>(null);
   const [userTrips, setUserTrips] = useState<UserTrip[]>([]);
+  const [editingTrip, setEditingTrip] = useState<UserTrip | null>(null);
+  const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
+  const [proposalContext, setProposalContext] = useState<"edit" | "proposal">("edit");
+  const [proposalForm, setProposalForm] = useState<NewTripState>({
+    destination: "",
+    sport: "",
+    startDate: "",
+    endDate: "",
+    budget: "",
+    people: 1,
+    notes: "",
+    isOpen: true
+  });
 
   const [newTrip, setNewTrip] = useState<NewTripState>({
     destination: "",
@@ -163,6 +183,22 @@ const Viagens = () => {
     }
   };
 
+  const openProposalModal = (trip: UserTrip, context: "edit" | "proposal" = "edit") => {
+    setEditingTrip(trip);
+    setProposalForm({
+      destination: trip.destination,
+      sport: trip.sport,
+      startDate: trip.startDate,
+      endDate: trip.endDate,
+      budget: trip.budget,
+      people: trip.people,
+      notes: trip.notes,
+      isOpen: trip.isOpen
+    });
+    setProposalContext(context);
+    setIsProposalModalOpen(true);
+  };
+
   const handlePackageInterest = (trip: PackagedTrip) => {
     const durationMatch = trip.duration.match(/\d+/);
     const durationInDays = durationMatch ? Number.parseInt(durationMatch[0], 10) : 3;
@@ -172,49 +208,76 @@ const Viagens = () => {
 
     const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
-    let feedback: "duplicate" | "added" | null = null;
+    const newTripProposal: UserTrip = {
+      id: Date.now(),
+      destination: trip.title,
+      sport: trip.sport,
+      startDate: formatDate(startDate),
+      endDate: formatDate(endDate),
+      budget: trip.price,
+      people: 1,
+      notes: trip.description,
+      isOpen: true,
+      interestedCount: 1,
+      packageId: trip.id,
+      slug: trip.slug
+    };
+
+    let added = false;
 
     setUserTrips(prevTrips => {
       const alreadyAdded = prevTrips.some(userTrip => userTrip.packageId === trip.id);
 
       if (alreadyAdded) {
-        feedback = "duplicate";
         return prevTrips;
       }
 
-      feedback = "added";
-      return [
-        ...prevTrips,
-        {
-          id: Date.now(),
-          destination: trip.title,
-          sport: trip.sport,
-          startDate: formatDate(startDate),
-          endDate: formatDate(endDate),
-          budget: trip.price,
-          people: 1,
-          notes: trip.description,
-          isOpen: true,
-          interestedCount: 1,
-          packageId: trip.id,
-          slug: trip.slug
-        }
-      ];
+      added = true;
+      return [...prevTrips, newTripProposal];
     });
 
-    if (feedback === "duplicate") {
+    if (!added) {
       toast({
         title: "Viagem já adicionada",
         description: "Você já demonstrou interesse por esse pacote."
       });
+      return;
     }
 
-    if (feedback === "added") {
-      toast({
-        title: "Viagem adicionada",
-        description: "Essa viagem foi adicionada às suas viagens de interesse."
-      });
-    }
+    toast({
+      title: "Viagem adicionada",
+      description: "Essa viagem foi adicionada às suas viagens de interesse."
+    });
+
+    openProposalModal(newTripProposal, "proposal");
+  };
+
+  const handleCloseProposalModal = () => {
+    setIsProposalModalOpen(false);
+    setEditingTrip(null);
+    setProposalContext("edit");
+  };
+
+  const handleProposalSubmit = () => {
+    if (!editingTrip) return;
+
+    setUserTrips(prevTrips =>
+      prevTrips.map(trip =>
+        trip.id === editingTrip.id
+          ? {
+              ...trip,
+              ...proposalForm
+            }
+          : trip
+      )
+    );
+
+    toast({
+      title: "Proposta atualizada",
+      description: "Os detalhes da viagem foram salvos com sucesso."
+    });
+
+    handleCloseProposalModal();
   };
 
   const handleNavigateToCommunity = (slug: string) => {
@@ -449,7 +512,11 @@ const Viagens = () => {
                                 </Button>
                               )}
                               <div className="flex space-x-2">
-                                <Button variant="outline" size="sm">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => openProposalModal(trip)}
+                                >
                                   <Edit className="h-4 w-4" />
                                 </Button>
                                 <Button
@@ -673,8 +740,162 @@ const Viagens = () => {
           )}
         </DialogContent>
       </Dialog>
+      <Dialog
+        open={isProposalModalOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleCloseProposalModal();
+          }
+        }}
+      >
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {proposalContext === "proposal"
+                ? "Personalize sua proposta TripNation"
+                : "Editar viagem"}
+            </DialogTitle>
+            <DialogDescription>
+              {proposalContext === "proposal"
+                ? "Ajuste o pacote selecionado com os detalhes da sua proposta antes de enviá-la."
+                : "Atualize as informações da viagem conforme necessário."}
+            </DialogDescription>
+          </DialogHeader>
+          {editingTrip && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="proposal-destination">Destino</Label>
+                  <Input
+                    id="proposal-destination"
+                    value={proposalForm.destination}
+                    onChange={(event) =>
+                      setProposalForm(prev => ({ ...prev, destination: event.target.value }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="proposal-sport">Esporte Principal</Label>
+                  <Select
+                    value={proposalForm.sport}
+                    onValueChange={(value) =>
+                      setProposalForm(prev => ({ ...prev, sport: value }))
+                    }
+                  >
+                    <SelectTrigger id="proposal-sport">
+                      <SelectValue placeholder="Selecione o esporte" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="trilha">Trilha</SelectItem>
+                      <SelectItem value="surf">Surf</SelectItem>
+                      <SelectItem value="ciclismo">Ciclismo</SelectItem>
+                      <SelectItem value="escalada">Escalada</SelectItem>
+                      <SelectItem value="rafting">Rafting</SelectItem>
+                      <SelectItem value="parapente">Parapente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="proposal-startDate">Data de Início</Label>
+                  <Input
+                    id="proposal-startDate"
+                    type="date"
+                    value={proposalForm.startDate}
+                    onChange={(event) =>
+                      setProposalForm(prev => ({ ...prev, startDate: event.target.value }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="proposal-endDate">Data de Fim</Label>
+                  <Input
+                    id="proposal-endDate"
+                    type="date"
+                    value={proposalForm.endDate}
+                    onChange={(event) =>
+                      setProposalForm(prev => ({ ...prev, endDate: event.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="proposal-budget">Orçamento Estimado</Label>
+                  <Input
+                    id="proposal-budget"
+                    value={proposalForm.budget}
+                    onChange={(event) =>
+                      setProposalForm(prev => ({ ...prev, budget: event.target.value }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="proposal-people">Número de Pessoas</Label>
+                  <Input
+                    id="proposal-people"
+                    type="number"
+                    min="1"
+                    value={proposalForm.people}
+                    onChange={(event) =>
+                      setProposalForm(prev => ({ ...prev, people: Number.parseInt(event.target.value, 10) || 1 }))
+                    }
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="proposal-notes">Observações</Label>
+                <Textarea
+                  id="proposal-notes"
+                  value={proposalForm.notes}
+                  onChange={(event) =>
+                    setProposalForm(prev => ({ ...prev, notes: event.target.value }))
+                  }
+                  placeholder="Inclua detalhes extras para a equipe TripNation"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label>Tipo de Grupo</Label>
+                <div className="mt-2 flex space-x-4">
+                  <Button
+                    type="button"
+                    variant={proposalForm.isOpen ? "default" : "outline"}
+                    onClick={() => setProposalForm(prev => ({ ...prev, isOpen: true }))}
+                    className="flex-1"
+                  >
+                    Grupo Aberto
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={!proposalForm.isOpen ? "default" : "outline"}
+                    onClick={() => setProposalForm(prev => ({ ...prev, isOpen: false }))}
+                    className="flex-1"
+                  >
+                    Grupo Fechado
+                  </Button>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {proposalForm.isOpen
+                    ? "Qualquer usuário pode demonstrar interesse na proposta"
+                    : "Apenas convidados poderão participar desta proposta"}
+                </p>
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={handleCloseProposalModal}>
+              Cancelar
+            </Button>
+            <Button onClick={handleProposalSubmit} className="bg-gradient-brasil hover:opacity-90">
+              Salvar proposta
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
       <ChatModal isOpen={isChatOpen} onOpenChange={setIsChatOpen} />
-      
+
       <Footer />
     </div>
   );
