@@ -121,6 +121,13 @@ type NewTripState = {
   isOpen: boolean;
 };
 
+type TripFormFieldConfig = {
+  disabled?: boolean;
+  hidden?: boolean;
+};
+
+type TripFormConfig = Partial<Record<keyof NewTripState, TripFormFieldConfig>>;
+
 type TripFormDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -130,6 +137,7 @@ type TripFormDialogProps = {
   onSubmit: () => void;
   submitLabel: string;
   trigger?: ReactNode;
+  config?: TripFormConfig;
 };
 
 const initialTripState: NewTripState = {
@@ -143,6 +151,13 @@ const initialTripState: NewTripState = {
   isOpen: true
 };
 
+const packagedTripEditConfig: TripFormConfig = {
+  destination: { disabled: true },
+  sport: { disabled: true },
+  budget: { disabled: true },
+  isOpen: { disabled: true }
+};
+
 const TripFormDialog = ({
   open,
   onOpenChange,
@@ -151,7 +166,8 @@ const TripFormDialog = ({
   onTripChange,
   onSubmit,
   submitLabel,
-  trigger
+  trigger,
+  config
 }: TripFormDialogProps) => {
   const handlePeopleChange = (value: string) => {
     const parsed = Number.parseInt(value, 10);
@@ -160,6 +176,20 @@ const TripFormDialog = ({
       people: Number.isNaN(parsed) ? 1 : parsed
     });
   };
+
+  const getFieldConfig = (field: keyof NewTripState): TripFormFieldConfig => ({
+    disabled: config?.[field]?.disabled ?? false,
+    hidden: config?.[field]?.hidden ?? false
+  });
+
+  const destinationField = getFieldConfig("destination");
+  const sportField = getFieldConfig("sport");
+  const startDateField = getFieldConfig("startDate");
+  const endDateField = getFieldConfig("endDate");
+  const budgetField = getFieldConfig("budget");
+  const peopleField = getFieldConfig("people");
+  const notesField = getFieldConfig("notes");
+  const groupTypeField = getFieldConfig("isOpen");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -170,124 +200,149 @@ const TripFormDialog = ({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="destination">Destino</Label>
-              <Input
-                id="destination"
-                value={trip.destination}
-                onChange={(e) =>
-                  onTripChange({ ...trip, destination: e.target.value })
-                }
-                placeholder="Ex: Chapada dos Veadeiros"
-              />
-            </div>
-            <div>
-              <Label htmlFor="sport">Esporte Principal</Label>
-              <Select
-                value={trip.sport}
-                onValueChange={(value) =>
-                  onTripChange({ ...trip, sport: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o esporte" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="trilha">Trilha</SelectItem>
-                  <SelectItem value="surf">Surf</SelectItem>
-                  <SelectItem value="ciclismo">Ciclismo</SelectItem>
-                  <SelectItem value="escalada">Escalada</SelectItem>
-                  <SelectItem value="rafting">Rafting</SelectItem>
-                  <SelectItem value="parapente">Parapente</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {!destinationField.hidden ? (
+              <div>
+                <Label htmlFor="destination">Destino</Label>
+                <Input
+                  id="destination"
+                  value={trip.destination}
+                  onChange={(e) =>
+                    onTripChange({ ...trip, destination: e.target.value })
+                  }
+                  placeholder="Ex: Chapada dos Veadeiros"
+                  disabled={destinationField.disabled}
+                />
+              </div>
+            ) : null}
+            {!sportField.hidden ? (
+              <div>
+                <Label htmlFor="sport">Esporte Principal</Label>
+                <Select
+                  value={trip.sport}
+                  onValueChange={(value) =>
+                    onTripChange({ ...trip, sport: value })
+                  }
+                  disabled={sportField.disabled}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o esporte" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="trilha">Trilha</SelectItem>
+                    <SelectItem value="surf">Surf</SelectItem>
+                    <SelectItem value="ciclismo">Ciclismo</SelectItem>
+                    <SelectItem value="escalada">Escalada</SelectItem>
+                    <SelectItem value="rafting">Rafting</SelectItem>
+                    <SelectItem value="parapente">Parapente</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : null}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="startDate">Data de Início</Label>
-              <Input
-                id="startDate"
-                type="date"
-                value={trip.startDate}
-                onChange={(e) =>
-                  onTripChange({ ...trip, startDate: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <Label htmlFor="endDate">Data de Fim</Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={trip.endDate}
-                onChange={(e) =>
-                  onTripChange({ ...trip, endDate: e.target.value })
-                }
-              />
-            </div>
+            {!startDateField.hidden ? (
+              <div>
+                <Label htmlFor="startDate">Data de Início</Label>
+                <Input
+                  id="startDate"
+                  type="date"
+                  value={trip.startDate}
+                  onChange={(e) =>
+                    onTripChange({ ...trip, startDate: e.target.value })
+                  }
+                  disabled={startDateField.disabled}
+                />
+              </div>
+            ) : null}
+            {!endDateField.hidden ? (
+              <div>
+                <Label htmlFor="endDate">Data de Fim</Label>
+                <Input
+                  id="endDate"
+                  type="date"
+                  value={trip.endDate}
+                  onChange={(e) =>
+                    onTripChange({ ...trip, endDate: e.target.value })
+                  }
+                  disabled={endDateField.disabled}
+                />
+              </div>
+            ) : null}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {!budgetField.hidden ? (
+              <div>
+                <Label htmlFor="budget">Orçamento Estimado</Label>
+                <Input
+                  id="budget"
+                  value={trip.budget}
+                  onChange={(e) =>
+                    onTripChange({ ...trip, budget: e.target.value })
+                  }
+                  placeholder="Ex: R$ 1.500"
+                  disabled={budgetField.disabled}
+                />
+              </div>
+            ) : null}
+            {!peopleField.hidden ? (
+              <div>
+                <Label htmlFor="people">Número de Pessoas</Label>
+                <Input
+                  id="people"
+                  type="number"
+                  min="1"
+                  value={trip.people}
+                  onChange={(e) => handlePeopleChange(e.target.value)}
+                  disabled={peopleField.disabled}
+                />
+              </div>
+            ) : null}
+          </div>
+          {!notesField.hidden ? (
             <div>
-              <Label htmlFor="budget">Orçamento Estimado</Label>
-              <Input
-                id="budget"
-                value={trip.budget}
+              <Label htmlFor="notes">Observações</Label>
+              <Textarea
+                id="notes"
+                value={trip.notes}
                 onChange={(e) =>
-                  onTripChange({ ...trip, budget: e.target.value })
+                  onTripChange({ ...trip, notes: e.target.value })
                 }
-                placeholder="Ex: R$ 1.500"
+                placeholder="Descreva detalhes especiais da sua viagem..."
+                rows={3}
+                disabled={notesField.disabled}
               />
             </div>
+          ) : null}
+          {!groupTypeField.hidden ? (
             <div>
-              <Label htmlFor="people">Número de Pessoas</Label>
-              <Input
-                id="people"
-                type="number"
-                min="1"
-                value={trip.people}
-                onChange={(e) => handlePeopleChange(e.target.value)}
-              />
+              <Label>Tipo de Grupo</Label>
+              <div className="flex space-x-4 mt-2">
+                <Button
+                  type="button"
+                  variant={trip.isOpen ? "default" : "outline"}
+                  onClick={() => onTripChange({ ...trip, isOpen: true })}
+                  className="flex-1"
+                  disabled={groupTypeField.disabled}
+                >
+                  Grupo Aberto
+                </Button>
+                <Button
+                  type="button"
+                  variant={!trip.isOpen ? "default" : "outline"}
+                  onClick={() => onTripChange({ ...trip, isOpen: false })}
+                  className="flex-1"
+                  disabled={groupTypeField.disabled}
+                >
+                  Grupo Fechado
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {trip.isOpen
+                  ? "Qualquer usuário pode demonstrar interesse"
+                  : "Apenas convidados podem participar"}
+              </p>
             </div>
-          </div>
-          <div>
-            <Label htmlFor="notes">Observações</Label>
-            <Textarea
-              id="notes"
-              value={trip.notes}
-              onChange={(e) =>
-                onTripChange({ ...trip, notes: e.target.value })
-              }
-              placeholder="Descreva detalhes especiais da sua viagem..."
-              rows={3}
-            />
-          </div>
-          <div>
-            <Label>Tipo de Grupo</Label>
-            <div className="flex space-x-4 mt-2">
-              <Button
-                type="button"
-                variant={trip.isOpen ? "default" : "outline"}
-                onClick={() => onTripChange({ ...trip, isOpen: true })}
-                className="flex-1"
-              >
-                Grupo Aberto
-              </Button>
-              <Button
-                type="button"
-                variant={!trip.isOpen ? "default" : "outline"}
-                onClick={() => onTripChange({ ...trip, isOpen: false })}
-                className="flex-1"
-              >
-                Grupo Fechado
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {trip.isOpen
-                ? "Qualquer usuário pode demonstrar interesse"
-                : "Apenas convidados podem participar"}
-            </p>
-          </div>
+          ) : null}
         </div>
         <div className="flex justify-end space-x-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -311,6 +366,9 @@ const Viagens = () => {
   const [newTrip, setNewTrip] = useState<NewTripState>(initialTripState);
   const [editingTrip, setEditingTrip] = useState<UserTrip | null>(null);
   const [editTripForm, setEditTripForm] = useState<NewTripState>(initialTripState);
+  const [editTripConfig, setEditTripConfig] = useState<TripFormConfig | undefined>(
+    undefined
+  );
 
   const handleCreateTrip = () => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
@@ -339,11 +397,13 @@ const Viagens = () => {
       notes: trip.notes,
       isOpen: trip.isOpen
     });
+    setEditTripConfig(trip.packageId ? packagedTripEditConfig : undefined);
   };
 
   const resetEditState = () => {
     setEditingTrip(null);
     setEditTripForm(initialTripState);
+    setEditTripConfig(undefined);
   };
 
   const handleSubmitEditTrip = () => {
@@ -694,6 +754,7 @@ const Viagens = () => {
         onTripChange={setEditTripForm}
         onSubmit={handleSubmitEditTrip}
         submitLabel={editingTrip?.packageId ? "Propor alteração" : "Salvar alterações"}
+        config={editTripConfig}
       />
 
       <Dialog
