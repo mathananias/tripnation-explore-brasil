@@ -140,7 +140,7 @@ const Auth = () => {
       const cpfDigits = onlyDigits(cpf);
       const cepDigits = onlyDigits(cep);
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -156,6 +156,37 @@ const Auth = () => {
       });
 
       if (error) throw error;
+
+      const userId = data.user?.id;
+
+      if (!userId) {
+        toast({
+          title: "Erro no cadastro",
+          description: "Não foi possível obter o identificador do usuário.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .upsert({
+          user_id: userId,
+          full_name: fullName.trim(),
+          cpf: cpfDigits,
+          cep: cepDigits,
+          rua: rua.trim(),
+          complemento: complemento.trim(),
+        });
+
+      if (profileError) {
+        toast({
+          title: "Erro ao salvar perfil",
+          description: profileError.message,
+          variant: "destructive",
+        });
+        return;
+      }
 
       // (Opcional) Fazer upload do documento no Storage aqui, se você já tiver um bucket configurado.
 
