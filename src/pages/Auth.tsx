@@ -13,6 +13,22 @@ import documentoExemplo from "@/assets/documento-exemplo.png";
 // helpers
 const onlyDigits = (v: string) => v.replace(/\D/g, "");
 
+const formatCPF = (raw: string) => {
+  const digits = onlyDigits(raw).slice(0, 11);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+  if (digits.length <= 9) {
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+  }
+  return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+};
+
+const formatCEP = (raw: string) => {
+  const digits = onlyDigits(raw).slice(0, 8);
+  if (digits.length <= 5) return digits;
+  return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+};
+
 function isValidCPF(raw: string) {
   const cpf = onlyDigits(raw);
   if (cpf.length !== 11) return false;
@@ -291,135 +307,161 @@ const Auth = () => {
 
             {/* CADASTRO */}
             <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">Nome Completo</Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => {
-                      setFullName(e.target.value);
-                      setErrors((er) => ({ ...er, fullName: undefined }));
-                    }}
-                    required
-                  />
-                  {errors.fullName && <p className="text-xs text-red-600">{errors.fullName}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="signupEmail">Email</Label>
-                  <Input
-                    id="signupEmail"
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setErrors((er) => ({ ...er, email: undefined }));
-                    }}
-                    required
-                  />
-                  {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="signupPassword">Senha</Label>
-                  <div className="relative">
-                    <Input
-                      id="signupPassword"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        setErrors((er) => ({ ...er, password: undefined }));
-                      }}
-                      required
-                      minLength={6}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                  {errors.password && <p className="text-xs text-red-600">{errors.password}</p>}
-                </div>
-
-                {/* NOVOS CAMPOS */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="cpf">CPF</Label>
-                    <Input
-                      id="cpf"
-                      inputMode="numeric"
-                      maxLength={11}
-                      value={cpf}
-                      onChange={(e) => {
-                        setCpf(onlyDigits(e.target.value));
-                        setErrors((er) => ({ ...er, cpf: undefined }));
-                      }}
-                      placeholder="Somente números"
-                      required
-                    />
-                    {errors.cpf && <p className="text-xs text-red-600">{errors.cpf}</p>}
+              <form onSubmit={handleSignUp} className="space-y-6">
+                <div className="rounded-lg border border-muted-foreground/10 bg-muted/10 p-4 space-y-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">Informações Pessoais</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Informe seus dados básicos para criarmos sua conta.
+                    </p>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="cep">CEP</Label>
-                    <Input
-                      id="cep"
-                      inputMode="numeric"
-                      maxLength={8}
-                      value={cep}
-                      onChange={(e) => {
-                        setCep(onlyDigits(e.target.value));
-                        setErrors((er) => ({ ...er, cep: undefined }));
-                      }}
-                      placeholder="Somente números"
-                      required
-                    />
-                    {loadingCEP && (
-                      <p className="text-xs text-gray-500 mt-1">Buscando endereço…</p>
-                    )}
-                    {errors.cep && <p className="text-xs text-red-600">{errors.cep}</p>}
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">Nome Completo</Label>
+                      <Input
+                        id="fullName"
+                        type="text"
+                        value={fullName}
+                        placeholder="Ex.: Maria Silva"
+                        onChange={(e) => {
+                          setFullName(e.target.value);
+                          setErrors((er) => ({ ...er, fullName: undefined }));
+                        }}
+                        required
+                      />
+                      {errors.fullName && <p className="text-xs text-red-600">{errors.fullName}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="signupEmail">Email</Label>
+                      <Input
+                        id="signupEmail"
+                        type="email"
+                        value={email}
+                        placeholder="voce@email.com"
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setErrors((er) => ({ ...er, email: undefined }));
+                        }}
+                        required
+                      />
+                      {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="signupPassword">Senha</Label>
+                      <div className="relative">
+                        <Input
+                          id="signupPassword"
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            setErrors((er) => ({ ...er, password: undefined }));
+                          }}
+                          required
+                          minLength={6}
+                          placeholder="Mínimo 6 caracteres"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                      {errors.password && <p className="text-xs text-red-600">{errors.password}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="cpf">CPF</Label>
+                      <Input
+                        id="cpf"
+                        inputMode="numeric"
+                        maxLength={14}
+                        value={cpf}
+                        onChange={(e) => {
+                          setCpf(formatCPF(e.target.value));
+                          setErrors((er) => ({ ...er, cpf: undefined }));
+                        }}
+                        placeholder="000.000.000-00"
+                        required
+                      />
+                      {errors.cpf && <p className="text-xs text-red-600">{errors.cpf}</p>}
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="rua">Rua</Label>
-                  <Input
-                    id="rua"
-                    type="text"
-                    value={rua}
-                    onChange={(e) => {
-                      setRua(e.target.value);
-                      setErrors((er) => ({ ...er, rua: undefined }));
-                    }}
-                    required
-                  />
-                  {errors.rua && <p className="text-xs text-red-600">{errors.rua}</p>}
-                </div>
+                <div className="rounded-lg border border-muted-foreground/10 bg-muted/10 p-4 space-y-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">Endereço</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Precisamos dessas informações para planejar a melhor experiência.
+                    </p>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="complemento">Complemento</Label>
-                  <Input
-                    id="complemento"
-                    type="text"
-                    value={complemento}
-                    onChange={(e) => {
-                      setComplemento(e.target.value);
-                      setErrors((er) => ({ ...er, complemento: undefined }));
-                    }}
-                    placeholder="Apto, bloco, ponto de referência…"
-                    required
-                  />
-                  {errors.complemento && (
-                    <p className="text-xs text-red-600">{errors.complemento}</p>
-                  )}
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="cep">CEP</Label>
+                        <Input
+                          id="cep"
+                          inputMode="numeric"
+                          maxLength={9}
+                          value={cep}
+                          onChange={(e) => {
+                            const formatted = formatCEP(e.target.value);
+                            setCep(formatted);
+                            setErrors((er) => ({ ...er, cep: undefined }));
+                          }}
+                          placeholder="00000-000"
+                          required
+                        />
+                        {loadingCEP && (
+                          <p className="text-xs text-gray-500 mt-1">Buscando endereço…</p>
+                        )}
+                        {errors.cep && <p className="text-xs text-red-600">{errors.cep}</p>}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="rua">Rua</Label>
+                        <Input
+                          id="rua"
+                          type="text"
+                          value={rua}
+                          onChange={(e) => {
+                            setRua(e.target.value);
+                            setErrors((er) => ({ ...er, rua: undefined }));
+                          }}
+                          placeholder="Rua Exemplo"
+                          required
+                        />
+                        {errors.rua && <p className="text-xs text-red-600">{errors.rua}</p>}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="complemento">Complemento</Label>
+                      <Input
+                        id="complemento"
+                        type="text"
+                        value={complemento}
+                        onChange={(e) => {
+                          setComplemento(e.target.value);
+                          setErrors((er) => ({ ...er, complemento: undefined }));
+                        }}
+                        placeholder="Apto, bloco, ponto de referência…"
+                        required
+                      />
+                      {errors.complemento && (
+                        <p className="text-xs text-red-600">{errors.complemento}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* UPLOAD DOCUMENTO */}
