@@ -16,6 +16,7 @@ const Comunidade = lazy(() => import("./pages/Comunidade"));
 const Chat = lazy(() => import("./pages/Chat"));
 const Perfil = lazy(() => import("./pages/Perfil"));
 const Sobre = lazy(() => import("./pages/Sobre"));
+const GuidesPage = lazy(() => import("./pages/GuidesPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="/chat" element={<Chat />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/sobre" element={<Sobre />} />
+              <Route path="/guias" element={<GuidesPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
