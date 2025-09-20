@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatModal from "@/components/ChatModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -121,23 +121,196 @@ type NewTripState = {
   isOpen: boolean;
 };
 
+type TripFormDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  trip: NewTripState;
+  onTripChange: (trip: NewTripState) => void;
+  onSubmit: () => void;
+  submitLabel: string;
+  trigger?: ReactNode;
+};
+
+const initialTripState: NewTripState = {
+  destination: "",
+  sport: "",
+  startDate: "",
+  endDate: "",
+  budget: "",
+  people: 1,
+  notes: "",
+  isOpen: true
+};
+
+const TripFormDialog = ({
+  open,
+  onOpenChange,
+  title,
+  trip,
+  onTripChange,
+  onSubmit,
+  submitLabel,
+  trigger
+}: TripFormDialogProps) => {
+  const handlePeopleChange = (value: string) => {
+    const parsed = Number.parseInt(value, 10);
+    onTripChange({
+      ...trip,
+      people: Number.isNaN(parsed) ? 1 : parsed
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="destination">Destino</Label>
+              <Input
+                id="destination"
+                value={trip.destination}
+                onChange={(e) =>
+                  onTripChange({ ...trip, destination: e.target.value })
+                }
+                placeholder="Ex: Chapada dos Veadeiros"
+              />
+            </div>
+            <div>
+              <Label htmlFor="sport">Esporte Principal</Label>
+              <Select
+                value={trip.sport}
+                onValueChange={(value) =>
+                  onTripChange({ ...trip, sport: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o esporte" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="trilha">Trilha</SelectItem>
+                  <SelectItem value="surf">Surf</SelectItem>
+                  <SelectItem value="ciclismo">Ciclismo</SelectItem>
+                  <SelectItem value="escalada">Escalada</SelectItem>
+                  <SelectItem value="rafting">Rafting</SelectItem>
+                  <SelectItem value="parapente">Parapente</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="startDate">Data de Início</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={trip.startDate}
+                onChange={(e) =>
+                  onTripChange({ ...trip, startDate: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <Label htmlFor="endDate">Data de Fim</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={trip.endDate}
+                onChange={(e) =>
+                  onTripChange({ ...trip, endDate: e.target.value })
+                }
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="budget">Orçamento Estimado</Label>
+              <Input
+                id="budget"
+                value={trip.budget}
+                onChange={(e) =>
+                  onTripChange({ ...trip, budget: e.target.value })
+                }
+                placeholder="Ex: R$ 1.500"
+              />
+            </div>
+            <div>
+              <Label htmlFor="people">Número de Pessoas</Label>
+              <Input
+                id="people"
+                type="number"
+                min="1"
+                value={trip.people}
+                onChange={(e) => handlePeopleChange(e.target.value)}
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="notes">Observações</Label>
+            <Textarea
+              id="notes"
+              value={trip.notes}
+              onChange={(e) =>
+                onTripChange({ ...trip, notes: e.target.value })
+              }
+              placeholder="Descreva detalhes especiais da sua viagem..."
+              rows={3}
+            />
+          </div>
+          <div>
+            <Label>Tipo de Grupo</Label>
+            <div className="flex space-x-4 mt-2">
+              <Button
+                type="button"
+                variant={trip.isOpen ? "default" : "outline"}
+                onClick={() => onTripChange({ ...trip, isOpen: true })}
+                className="flex-1"
+              >
+                Grupo Aberto
+              </Button>
+              <Button
+                type="button"
+                variant={!trip.isOpen ? "default" : "outline"}
+                onClick={() => onTripChange({ ...trip, isOpen: false })}
+                className="flex-1"
+              >
+                Grupo Fechado
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {trip.isOpen
+                ? "Qualquer usuário pode demonstrar interesse"
+                : "Apenas convidados podem participar"}
+            </p>
+          </div>
+        </div>
+        <div className="flex justify-end space-x-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancelar
+          </Button>
+          <Button onClick={onSubmit} className="bg-gradient-brasil hover:opacity-90">
+            {submitLabel}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const Viagens = () => {
   const navigate = useNavigate();
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<PackagedTrip | null>(null);
   const [userTrips, setUserTrips] = useState<UserTrip[]>([]);
-
-  const [newTrip, setNewTrip] = useState<NewTripState>({
-    destination: "",
-    sport: "",
-    startDate: "",
-    endDate: "",
-    budget: "",
-    people: 1,
-    notes: "",
-    isOpen: true
-  });
+  const [newTrip, setNewTrip] = useState<NewTripState>(initialTripState);
+  const [editingTrip, setEditingTrip] = useState<UserTrip | null>(null);
+  const [editTripForm, setEditTripForm] = useState<NewTripState>(initialTripState);
 
   const handleCreateTrip = () => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
@@ -149,17 +322,52 @@ const Viagens = () => {
           interestedCount: 0
         }
       ]);
-      setNewTrip({
-        destination: "",
-        sport: "",
-        startDate: "",
-        endDate: "",
-        budget: "",
-        people: 1,
-        notes: "",
-        isOpen: true
-      });
+      setNewTrip(initialTripState);
       setIsCreateTripOpen(false);
+    }
+  };
+
+  const handleOpenEditTrip = (trip: UserTrip) => {
+    setEditingTrip(trip);
+    setEditTripForm({
+      destination: trip.destination,
+      sport: trip.sport,
+      startDate: trip.startDate,
+      endDate: trip.endDate,
+      budget: trip.budget,
+      people: trip.people,
+      notes: trip.notes,
+      isOpen: trip.isOpen
+    });
+  };
+
+  const resetEditState = () => {
+    setEditingTrip(null);
+    setEditTripForm(initialTripState);
+  };
+
+  const handleSubmitEditTrip = () => {
+    if (!editingTrip) {
+      return;
+    }
+
+    if (
+      editTripForm.destination &&
+      editTripForm.sport &&
+      editTripForm.startDate &&
+      editTripForm.endDate
+    ) {
+      setUserTrips(prevTrips =>
+        prevTrips.map(trip =>
+          trip.id === editingTrip.id
+            ? {
+                ...trip,
+                ...editTripForm
+              }
+            : trip
+        )
+      );
+      resetEditState();
     }
   };
 
@@ -259,134 +467,21 @@ const Viagens = () => {
           <div className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-foreground">Criar Nova Viagem</h2>
-              <Dialog open={isCreateTripOpen} onOpenChange={setIsCreateTripOpen}>
-                <DialogTrigger asChild>
+              <TripFormDialog
+                open={isCreateTripOpen}
+                onOpenChange={setIsCreateTripOpen}
+                title="Criar Nova Viagem"
+                trip={newTrip}
+                onTripChange={setNewTrip}
+                onSubmit={handleCreateTrip}
+                submitLabel="Criar Viagem"
+                trigger={
                   <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity">
                     <Plus aria-hidden="true" className="h-5 w-5 mr-2" />
                     Criar Viagem
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Criar Nova Viagem</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="destination">Destino</Label>
-                        <Input
-                          id="destination"
-                          value={newTrip.destination}
-                          onChange={(e) => setNewTrip({...newTrip, destination: e.target.value})}
-                          placeholder="Ex: Chapada dos Veadeiros"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="sport">Esporte Principal</Label>
-                        <Select value={newTrip.sport} onValueChange={(value) => setNewTrip({...newTrip, sport: value})}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione o esporte" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="trilha">Trilha</SelectItem>
-                            <SelectItem value="surf">Surf</SelectItem>
-                            <SelectItem value="ciclismo">Ciclismo</SelectItem>
-                            <SelectItem value="escalada">Escalada</SelectItem>
-                            <SelectItem value="rafting">Rafting</SelectItem>
-                            <SelectItem value="parapente">Parapente</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="startDate">Data de Início</Label>
-                        <Input
-                          id="startDate"
-                          type="date"
-                          value={newTrip.startDate}
-                          onChange={(e) => setNewTrip({...newTrip, startDate: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="endDate">Data de Fim</Label>
-                        <Input
-                          id="endDate"
-                          type="date"
-                          value={newTrip.endDate}
-                          onChange={(e) => setNewTrip({...newTrip, endDate: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="budget">Orçamento Estimado</Label>
-                        <Input
-                          id="budget"
-                          value={newTrip.budget}
-                          onChange={(e) => setNewTrip({...newTrip, budget: e.target.value})}
-                          placeholder="Ex: R$ 1.500"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="people">Número de Pessoas</Label>
-                        <Input
-                          id="people"
-                          type="number"
-                          min="1"
-                          value={newTrip.people}
-                          onChange={(e) => setNewTrip({...newTrip, people: parseInt(e.target.value)})}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="notes">Observações</Label>
-                      <Textarea
-                        id="notes"
-                        value={newTrip.notes}
-                        onChange={(e) => setNewTrip({...newTrip, notes: e.target.value})}
-                        placeholder="Descreva detalhes especiais da sua viagem..."
-                        rows={3}
-                      />
-                    </div>
-                    <div>
-                      <Label>Tipo de Grupo</Label>
-                      <div className="flex space-x-4 mt-2">
-                        <Button
-                          type="button"
-                          variant={newTrip.isOpen ? "default" : "outline"}
-                          onClick={() => setNewTrip({...newTrip, isOpen: true})}
-                          className="flex-1"
-                        >
-                          Grupo Aberto
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={!newTrip.isOpen ? "default" : "outline"}
-                          onClick={() => setNewTrip({...newTrip, isOpen: false})}
-                          className="flex-1"
-                        >
-                          Grupo Fechado
-                        </Button>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {newTrip.isOpen 
-                          ? "Qualquer usuário pode demonstrar interesse" 
-                          : "Apenas convidados podem participar"
-                        }
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" onClick={() => setIsCreateTripOpen(false)}>
-                      Cancelar
-                    </Button>
-                    <Button onClick={handleCreateTrip} className="bg-gradient-brasil hover:opacity-90">
-                      Criar Viagem
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                }
+              />
             </div>
 
             {/* Minhas Viagens */}
@@ -449,7 +544,11 @@ const Viagens = () => {
                                 </Button>
                               )}
                               <div className="flex space-x-2">
-                                <Button variant="outline" size="sm">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleOpenEditTrip(trip)}
+                                >
                                   <Edit className="h-4 w-4" />
                                 </Button>
                                 <Button
@@ -572,6 +671,20 @@ const Viagens = () => {
           </div>
         </div>
       </main>
+
+      <TripFormDialog
+        open={!!editingTrip}
+        onOpenChange={(open) => {
+          if (!open) {
+            resetEditState();
+          }
+        }}
+        title={editingTrip?.packageId ? "Propor alteração de pacote" : "Editar viagem"}
+        trip={editTripForm}
+        onTripChange={setEditTripForm}
+        onSubmit={handleSubmitEditTrip}
+        submitLabel={editingTrip?.packageId ? "Propor alteração" : "Salvar alterações"}
+      />
 
       <Dialog
         open={!!selectedPackage}
