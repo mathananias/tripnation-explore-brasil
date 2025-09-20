@@ -136,7 +136,7 @@ const mockReviews: ReviewItem[] = [
     comment:
       "Experiência única! As ondas estavam perfeitas e o instrutor foi excepcional. Recomendo muito para quem quer aprender ou aperfeiçoar o surf.",
     date: "8 Jan 2024",
-    images: [surfPraiaImage, placeholderAvatar]
+    images: [surfPraiaImage]
   },
   {
     type: "avaliacao",
