@@ -60,6 +60,11 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Data contracts
+
+- Os pacotes sugeridos em `src/pages/Viagens.tsx` expõem o array `packagedTrips`, que agora inclui o campo `slug` e é compartilhado com outros módulos.
+- A página `Comunidade` utiliza o mesmo identificador para filtrar e destacar conteúdos relacionados a um pacote específico via query string (`/comunidade?trip=<slug>`). Sempre que novos destinos interligados forem criados, garanta que o `slug` seja mantido consistente em ambos os contextos.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/77a15201-b794-484c-b107-b755089acb43) and click on Share -> Publish.

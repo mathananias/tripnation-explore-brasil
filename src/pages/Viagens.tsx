@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ChatModal from "@/components/ChatModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,9 +18,33 @@ import bikeImage from "@/assets/mountain-bike-mata-atlantica.jpg";
 import SEO from "@/components/SEO";
 import { toast } from "@/hooks/use-toast";
 
-const packagedTrips = [
+type TripPartnership = {
+  transport: string;
+  accommodation: string;
+  restaurant: {
+    name: string;
+    discount: string;
+  };
+};
+
+export type PackagedTrip = {
+  id: number;
+  slug: string;
+  title: string;
+  duration: string;
+  price: string;
+  description: string;
+  image: string;
+  rating: number;
+  difficulty: string;
+  sport: string;
+  partnerships: TripPartnership;
+};
+
+export const packagedTrips: PackagedTrip[] = [
   {
     id: 1,
+    slug: "serra-das-estrelas",
     title: "Trilha na Serra das Estrelas",
     duration: "3 dias",
     price: "R$ 1.200",
@@ -36,6 +61,7 @@ const packagedTrips = [
   },
   {
     id: 2,
+    slug: "praia-do-atoba",
     title: "Surf na Praia do Atobá",
     duration: "5 dias",
     price: "R$ 2.500",
@@ -52,6 +78,7 @@ const packagedTrips = [
   },
   {
     id: 3,
+    slug: "vale-encantado",
     title: "Ciclismo no Vale Encantado",
     duration: "2 dias",
     price: "R$ 900",
@@ -70,6 +97,7 @@ const packagedTrips = [
 
 type UserTrip = {
   id: number;
+  slug?: string;
   destination: string;
   sport: string;
   startDate: string;
@@ -94,6 +122,7 @@ type NewTripState = {
 };
 
 const Viagens = () => {
+  const navigate = useNavigate();
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [userTrips, setUserTrips] = useState<UserTrip[]>([
@@ -146,7 +175,7 @@ const Viagens = () => {
     }
   };
 
-  const handlePackageInterest = (trip: (typeof packagedTrips)[number]) => {
+  const handlePackageInterest = (trip: PackagedTrip) => {
     const durationMatch = trip.duration.match(/\d+/);
     const durationInDays = durationMatch ? Number.parseInt(durationMatch[0], 10) : 3;
     const startDate = new Date();
@@ -179,7 +208,8 @@ const Viagens = () => {
           notes: trip.description,
           isOpen: true,
           interestedCount: 1,
-          packageId: trip.id
+          packageId: trip.id,
+          slug: trip.slug
         }
       ];
     });
@@ -197,6 +227,10 @@ const Viagens = () => {
         description: "Essa viagem foi adicionada às suas viagens de interesse."
       });
     }
+  };
+
+  const handleNavigateToCommunity = (slug: string) => {
+    navigate(`/comunidade?trip=${slug}`);
   };
 
   const handleDeleteTrip = (id: number) => {
@@ -368,15 +402,22 @@ const Viagens = () => {
               <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4 text-foreground">Minhas Viagens</h3>
                 <div className="grid gap-4">
-                  {userTrips.map((trip) => (
-                    <Card key={trip.id} className="border-l-4 border-l-primary">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <h4 className="font-semibold text-lg text-foreground">{trip.destination}</h4>
-                              <Badge variant="secondary">{trip.sport}</Badge>
-                            </div>
+                  {userTrips.map((trip) => {
+                    const packageSlug =
+                      trip.slug ??
+                      (trip.packageId
+                        ? packagedTrips.find(pkg => pkg.id === trip.packageId)?.slug
+                        : undefined);
+
+                    return (
+                      <Card key={trip.id} className="border-l-4 border-l-primary">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3 mb-2">
+                                <h4 className="font-semibold text-lg text-foreground">{trip.destination}</h4>
+                                <Badge variant="secondary">{trip.sport}</Badge>
+                              </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
                               <div className="flex items-center space-x-1">
                                 <Calendar className="h-4 w-4" />
@@ -394,41 +435,46 @@ const Viagens = () => {
                             {trip.notes && (
                               <p className="mt-2 text-sm text-muted-foreground">{trip.notes}</p>
                             )}
-                            <div className="flex items-center space-x-4 mt-3">
-                              <Badge variant={trip.isOpen ? "default" : "secondary"}>
-                                {trip.isOpen ? "Grupo Aberto" : "Grupo Fechado"}
-                              </Badge>
-                              {trip.isOpen && (
-                                <span className="text-sm text-muted-foreground">
-                                  {trip.interestedCount} pessoas interessadas
-                                </span>
+                              <div className="flex items-center space-x-4 mt-3">
+                                <Badge variant={trip.isOpen ? "default" : "secondary"}>
+                                  {trip.isOpen ? "Grupo Aberto" : "Grupo Fechado"}
+                                </Badge>
+                                {trip.isOpen && (
+                                  <span className="text-sm text-muted-foreground">
+                                    {trip.interestedCount} pessoas interessadas
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex flex-col space-y-2">
+                              {trip.isOpen && packageSlug && (
+                                <Button
+                                  size="sm"
+                                  className="bg-gradient-brasil hover:opacity-90"
+                                  onClick={() => handleNavigateToCommunity(packageSlug)}
+                                >
+                                  Ver na Comunidade
+                                </Button>
                               )}
+                              <div className="flex space-x-2">
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDeleteTrip(trip.id)}
+                                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
-                          <div className="flex flex-col space-y-2">
-                            {trip.isOpen && (
-                              <Button size="sm" className="bg-gradient-brasil hover:opacity-90">
-                                Tenho Interesse
-                              </Button>
-                            )}
-                            <div className="flex space-x-2">
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => handleDeleteTrip(trip.id)}
-                                className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -479,13 +525,23 @@ const Viagens = () => {
                       </div>
                     </div>
                     
-                    <Button
-                      size="sm"
-                      className="w-full bg-gradient-brasil hover:opacity-90"
-                      onClick={() => handlePackageInterest(trip)}
-                    >
-                      Tenho Interesse
-                    </Button>
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        size="sm"
+                        className="w-full bg-gradient-brasil hover:opacity-90"
+                        onClick={() => handlePackageInterest(trip)}
+                      >
+                        Tenho Interesse
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => handleNavigateToCommunity(trip.slug)}
+                      >
+                        Ver na Comunidade
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
