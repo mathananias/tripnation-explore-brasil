@@ -421,7 +421,6 @@ const Viagens = () => {
         title: "Viagem adicionada",
         description: "Essa viagem foi adicionada às suas viagens de interesse."
       });
-      handleOpenEditTrip(createdTrip);
     }
   };
 
