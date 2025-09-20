@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
@@ -17,45 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-
-interface Guide {
-  id: string;
-  name: string;
-  location: string;
-  description: string;
-  photo: string;
-}
-
-const guides: Guide[] = [
-  {
-    id: "joao",
-    name: "Maria Silva",
-    location: "Manaus, AM",
-    description: "Especialista em expedições pela floresta amazônica e culturas ribeirinhas.",
-    photo: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=256&q=80"
-  },
-  {
-    id: "mariana",
-    name: "Mariana Castro",
-    location: "Lençóis, BA",
-    description: "Conhecedora das trilhas da Chapada Diamantina e apaixonada por fotografia.",
-    photo: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=256&q=80"
-  },
-  {
-    id: "carlos",
-    name: "Carlos Pereira",
-    location: "Bonito, MS",
-    description: "Mergulhador certificado que guia roteiros de ecoturismo e rios cristalinos.",
-    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80"
-  },
-  {
-    id: "luana",
-    name: "Luana Ribeiro",
-    location: "Florianópolis, SC",
-    description: "Instrutora de surf e trilhas costeiras com foco em experiências sustentáveis.",
-    photo: "https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=256&q=80"
-  }
-];
+import { useSearchParams } from "react-router-dom";
+import { guides, type Guide } from "@/lib/guides";
 
 const initialFormState = {
   name: "",
@@ -66,14 +29,47 @@ const initialFormState = {
 const GuidesPage = () => {
   const [openGuideId, setOpenGuideId] = useState<string | null>(null);
   const [contactForm, setContactForm] = useState(initialFormState);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const guideParam = searchParams.get("guia");
+    if (!guideParam) {
+      setOpenGuideId(null);
+      setContactForm(initialFormState);
+      return;
+    }
+
+    const guideExists = guides.some(guide => guide.id === guideParam);
+    if (!guideExists) {
+      return;
+    }
+
+    setOpenGuideId(guideParam);
+    setContactForm(initialFormState);
+
+    const card = document.getElementById(`guia-${guideParam}`);
+    if (card) {
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [searchParams]);
 
   const handleDialogOpenChange = (guideId: string, open: boolean) => {
     if (open) {
       setOpenGuideId(guideId);
       setContactForm(initialFormState);
+      setSearchParams(prevParams => {
+        const params = new URLSearchParams(prevParams);
+        params.set("guia", guideId);
+        return params;
+      });
     } else {
       setOpenGuideId(null);
       setContactForm(initialFormState);
+      setSearchParams(prevParams => {
+        const params = new URLSearchParams(prevParams);
+        params.delete("guia");
+        return params;
+      });
     }
   };
 
@@ -110,7 +106,7 @@ const GuidesPage = () => {
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
             {guides.map(guide => (
-              <Card key={guide.id} className="flex flex-col">
+              <Card key={guide.id} id={`guia-${guide.id}`} className="flex flex-col">
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <img
