@@ -37,7 +37,14 @@ const Header = () => {
                 key={item.to}
                 to={item.to}
                 end={item.end}
-                className="text-foreground hover:text-primary transition-colors font-medium"
+                className={({ isActive }) =>
+                  [
+                    "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    isActive
+                      ? "text-blue-600 font-bold border-b-2 border-blue-600"
+                      : "text-gray-700 hover:text-blue-500",
+                  ].join(" ")
+                }
               >
                 {item.label}
               </NavLink>
@@ -80,7 +87,14 @@ const Header = () => {
                   key={item.to}
                   to={item.to}
                   end={item.end}
-                  className="text-foreground hover:text-primary transition-colors font-medium"
+                  className={({ isActive }) =>
+                    [
+                      "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                      isActive
+                        ? "text-blue-600 font-bold border-b-2 border-blue-600"
+                        : "text-gray-700 hover:text-blue-500",
+                    ].join(" ")
+                  }
                 >
                   {item.label}
                 </NavLink>
