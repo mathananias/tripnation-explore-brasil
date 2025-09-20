@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatModal from "@/components/ChatModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import surfImage from "@/assets/surf-praia-atoba.jpg";
 import bikeImage from "@/assets/mountain-bike-mata-atlantica.jpg";
 import SEO from "@/components/SEO";
 import { toast } from "@/hooks/use-toast";
+import { guides, type Guide } from "@/lib/guides";
 
 type TripPartnership = {
   transport: string;
@@ -39,6 +40,7 @@ export type PackagedTrip = {
   difficulty: string;
   sport: string;
   partnerships: TripPartnership;
+  guideId?: string;
 };
 
 export const packagedTrips: PackagedTrip[] = [
@@ -57,7 +59,8 @@ export const packagedTrips: PackagedTrip[] = [
       transport: "Buser",
       accommodation: "Pousada Horizonte",
       restaurant: { name: "Restaurante Sabor da Serra", discount: "15% OFF" }
-    }
+    },
+    guideId: "mariana"
   },
   {
     id: 2,
@@ -74,7 +77,8 @@ export const packagedTrips: PackagedTrip[] = [
       transport: "Expresso Brasileiro",
       accommodation: "Hotel Praia Azul",
       restaurant: { name: "Marisqueira do Porto", discount: "20% OFF" }
-    }
+    },
+    guideId: "luana"
   },
   {
     id: 3,
@@ -108,6 +112,7 @@ export type UserTrip = {
   isOpen: boolean;
   interestedCount: number;
   packageId?: number;
+  guideId?: string;
 };
 
 type NewTripState = {
@@ -370,6 +375,17 @@ const Viagens = () => {
     undefined
   );
 
+  const guidesById = useMemo(() => {
+    return guides.reduce<Record<string, Guide>>((accumulator, guide) => {
+      accumulator[guide.id] = guide;
+      return accumulator;
+    }, {});
+  }, []);
+
+  const selectedGuide = selectedPackage?.guideId
+    ? guidesById[selectedPackage.guideId]
+    : undefined;
+
   const handleCreateTrip = () => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
       setUserTrips(prevTrips => [
@@ -452,7 +468,8 @@ const Viagens = () => {
       isOpen: true,
       interestedCount: 1,
       packageId: trip.id,
-      slug: trip.slug
+      slug: trip.slug,
+      guideId: trip.guideId
     };
 
     let feedback: "duplicate" | "added" | null = null;
@@ -552,12 +569,13 @@ const Viagens = () => {
               <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4 text-foreground">Minhas Viagens</h3>
                 <div className="grid gap-4">
-                  {userTrips.map((trip) => {
+                  {userTrips.map(trip => {
                     const packageSlug =
                       trip.slug ??
                       (trip.packageId
                         ? packagedTrips.find(pkg => pkg.id === trip.packageId)?.slug
                         : undefined);
+                    const guide = trip.guideId ? guidesById[trip.guideId] : undefined;
 
                     return (
                       <Card key={trip.id} className="border-l-4 border-l-primary">
@@ -568,11 +586,27 @@ const Viagens = () => {
                                 <h4 className="font-semibold text-lg text-foreground">{trip.destination}</h4>
                                 <Badge variant="secondary">{trip.sport}</Badge>
                               </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
-                              <div className="flex items-center space-x-1">
-                                <Calendar className="h-4 w-4" />
-                                <span>{trip.startDate} - {trip.endDate}</span>
-                              </div>
+                              {guide ? (
+                                <div className="mb-3 flex items-center gap-3 rounded-md border border-muted p-3">
+                                  <img
+                                    src={guide.photo}
+                                    alt={`Foto de ${guide.name}`}
+                                    className="h-12 w-12 rounded-full object-cover"
+                                  />
+                                  <div>
+                                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                      Guiado por
+                                    </p>
+                                    <p className="text-sm font-semibold text-foreground">{guide.name}</p>
+                                    <p className="text-xs text-muted-foreground">{guide.location}</p>
+                                  </div>
+                                </div>
+                              ) : null}
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                                <div className="flex items-center space-x-1">
+                                  <Calendar className="h-4 w-4" />
+                                  <span>{trip.startDate} - {trip.endDate}</span>
+                                </div>
                               <div className="flex items-center space-x-1">
                                 <DollarSign className="h-4 w-4" />
                                 <span>{trip.budget}</span>
@@ -597,6 +631,16 @@ const Viagens = () => {
                               </div>
                             </div>
                             <div className="flex flex-col space-y-2">
+                              {guide ? (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-primary text-primary hover:bg-primary/10"
+                                  onClick={() => navigate(`/guias?guia=${guide.id}`)}
+                                >
+                                  Falar com o guia
+                                </Button>
+                              ) : null}
                               {trip.isOpen && packageSlug && (
                                 <Button
                                   size="sm"
@@ -657,11 +701,14 @@ const Viagens = () => {
           <div>
             <h2 className="text-2xl font-bold mb-6 text-foreground">Pacotes de Viagens</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {packagedTrips.map((trip) => (
-                <Card key={trip.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group">
+              {packagedTrips.map(trip => {
+                const guide = trip.guideId ? guidesById[trip.guideId] : undefined;
+
+                return (
+                  <Card key={trip.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group">
                   <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={trip.image} 
+                    <img
+                      src={trip.image}
                       alt={`Pacote ${trip.title}`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -676,15 +723,32 @@ const Viagens = () => {
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <CardContent className="p-4">
                     <div className="flex items-start gap-2 mb-2">
                       <MapPin aria-hidden="true" className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                       <h3 className="font-semibold text-sm leading-tight">{trip.title}</h3>
                     </div>
-                    
+
                     <p className="text-sm text-muted-foreground mb-3">{trip.description}</p>
-                    
+
+                    {guide ? (
+                      <div className="mb-4 flex items-center gap-3 rounded-md border border-muted p-3">
+                        <img
+                          src={guide.photo}
+                          alt={`Foto de ${guide.name}`}
+                          className="h-12 w-12 rounded-full object-cover"
+                        />
+                        <div>
+                          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Guiado por
+                          </p>
+                          <p className="text-sm font-semibold text-foreground">{guide.name}</p>
+                          <p className="text-xs text-muted-foreground">{guide.location}</p>
+                        </div>
+                      </div>
+                    ) : null}
+
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Users aria-hidden="true" className="w-4 h-4" />
@@ -716,8 +780,9 @@ const Viagens = () => {
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
           </div>
 
@@ -813,6 +878,25 @@ const Viagens = () => {
                   </div>
                 </div>
                 <div className="space-y-4">
+                  {selectedGuide ? (
+                    <div className="flex items-start gap-4 rounded-lg border p-4">
+                      <img
+                        src={selectedGuide.photo}
+                        alt={`Foto de ${selectedGuide.name}`}
+                        className="h-16 w-16 rounded-full object-cover"
+                      />
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          Guiado por
+                        </p>
+                        <p className="text-base font-semibold text-foreground">{selectedGuide.name}</p>
+                        <p className="text-sm text-muted-foreground">{selectedGuide.location}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {selectedGuide.description}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
                   <div className="rounded-lg border p-4">
                     <h4 className="font-semibold mb-2 text-foreground">Parcerias</h4>
                     <div className="space-y-2 text-sm text-muted-foreground">
@@ -831,6 +915,18 @@ const Viagens = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
+                    {selectedGuide ? (
+                      <Button
+                        variant="outline"
+                        className="w-full border-primary text-primary hover:bg-primary/10"
+                        onClick={() => {
+                          navigate(`/guias?guia=${selectedGuide.id}`);
+                          setSelectedPackage(null);
+                        }}
+                      >
+                        Falar com o guia
+                      </Button>
+                    ) : null}
                     <Button
                       className="w-full bg-gradient-brasil hover:opacity-90"
                       onClick={() => {
