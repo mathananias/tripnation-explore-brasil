@@ -31,9 +31,6 @@ const Header = () => {
             <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
               Comunidade
             </Link>
-            <Link to="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
-              Avaliações
-            </Link>
             <Link to="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
               Chat
             </Link>
@@ -78,9 +75,6 @@ const Header = () => {
               </Link>
               <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
                 Comunidade
-              </Link>
-              <Link to="/avaliacoes" className="text-foreground hover:text-primary transition-colors font-medium">
-                Avaliações
               </Link>
               <Link to="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
                 Chat
