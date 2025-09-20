@@ -1,7 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Menu, Search, MapPin } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+
+const navItems: { label: string; to: string; end?: boolean }[] = [
+  { label: "Início", to: "/", end: true },
+  { label: "Viagens", to: "/viagens" },
+  { label: "Comunidade", to: "/comunidade" },
+  { label: "Avaliações", to: "/avaliacoes" },
+  { label: "Perfil", to: "/perfil" },
+];
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,21 +33,23 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
-              Viagens
-            </Link>
-            <Link to="/guias" className="text-foreground hover:text-primary transition-colors font-medium">
-              Guias
-            </Link>
-            <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
-              Comunidade
-            </Link>
-            <Link to="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
-              Chat
-            </Link>
-            <Link to="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
-              Perfil
-            </Link>
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) =>
+                  [
+                    "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    isActive
+                      ? "text-blue-600 font-bold border-b-2 border-blue-600"
+                      : "text-gray-700 hover:text-blue-500",
+                  ].join(" ")
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
           </nav>
 
           {/* Actions */}
@@ -73,21 +83,23 @@ const Header = () => {
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pt-4 border-t border-border">
             <div className="flex flex-col space-y-4">
-              <Link to="/viagens" className="text-foreground hover:text-primary transition-colors font-medium">
-                Viagens
-              </Link>
-              <Link to="/guias" className="text-foreground hover:text-primary transition-colors font-medium">
-                Guias
-              </Link>
-              <Link to="/comunidade" className="text-foreground hover:text-primary transition-colors font-medium">
-                Comunidade
-              </Link>
-              <Link to="/chat" className="text-foreground hover:text-primary transition-colors font-medium">
-                Chat
-              </Link>
-              <Link to="/perfil" className="text-foreground hover:text-primary transition-colors font-medium">
-                Perfil
-              </Link>
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    [
+                      "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                      isActive
+                        ? "text-blue-600 font-bold border-b-2 border-blue-600"
+                        : "text-gray-700 hover:text-blue-500",
+                    ].join(" ")
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
               <div className="flex space-x-2 pt-2">
                 <Button variant="ghost" size="icon" aria-label="Pesquisar">
                   <Search aria-hidden="true" className="w-5 h-5" />
