@@ -15,6 +15,7 @@ import escaladaImage from "@/assets/escalada-chapada.jpg";
 import surfImage from "@/assets/surf-praia-atoba.jpg";
 import bikeImage from "@/assets/mountain-bike-mata-atlantica.jpg";
 import SEO from "@/components/SEO";
+import { toast } from "@/hooks/use-toast";
 
 const packagedTrips = [
   {
@@ -67,10 +68,35 @@ const packagedTrips = [
   }
 ];
 
+type UserTrip = {
+  id: number;
+  destination: string;
+  sport: string;
+  startDate: string;
+  endDate: string;
+  budget: string;
+  people: number;
+  notes: string;
+  isOpen: boolean;
+  interestedCount: number;
+  packageId?: number;
+};
+
+type NewTripState = {
+  destination: string;
+  sport: string;
+  startDate: string;
+  endDate: string;
+  budget: string;
+  people: number;
+  notes: string;
+  isOpen: boolean;
+};
+
 const Viagens = () => {
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [userTrips, setUserTrips] = useState([
+  const [userTrips, setUserTrips] = useState<UserTrip[]>([
     {
       id: 1,
       destination: "Chapada dos Veadeiros",
@@ -85,7 +111,7 @@ const Viagens = () => {
     }
   ]);
 
-  const [newTrip, setNewTrip] = useState({
+  const [newTrip, setNewTrip] = useState<NewTripState>({
     destination: "",
     sport: "",
     startDate: "",
@@ -98,11 +124,14 @@ const Viagens = () => {
 
   const handleCreateTrip = () => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
-      setUserTrips([...userTrips, { 
-        ...newTrip, 
-        id: Date.now(), 
-        interestedCount: 0 
-      }]);
+      setUserTrips(prevTrips => [
+        ...prevTrips,
+        {
+          ...newTrip,
+          id: Date.now(),
+          interestedCount: 0
+        }
+      ]);
       setNewTrip({
         destination: "",
         sport: "",
@@ -114,6 +143,59 @@ const Viagens = () => {
         isOpen: true
       });
       setIsCreateTripOpen(false);
+    }
+  };
+
+  const handlePackageInterest = (trip: (typeof packagedTrips)[number]) => {
+    const durationMatch = trip.duration.match(/\d+/);
+    const durationInDays = durationMatch ? Number.parseInt(durationMatch[0], 10) : 3;
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + durationInDays);
+
+    const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
+    let feedback: "duplicate" | "added" | null = null;
+
+    setUserTrips(prevTrips => {
+      const alreadyAdded = prevTrips.some(userTrip => userTrip.packageId === trip.id);
+
+      if (alreadyAdded) {
+        feedback = "duplicate";
+        return prevTrips;
+      }
+
+      feedback = "added";
+      return [
+        ...prevTrips,
+        {
+          id: Date.now(),
+          destination: trip.title,
+          sport: trip.sport,
+          startDate: formatDate(startDate),
+          endDate: formatDate(endDate),
+          budget: trip.price,
+          people: 1,
+          notes: trip.description,
+          isOpen: true,
+          interestedCount: 1,
+          packageId: trip.id
+        }
+      ];
+    });
+
+    if (feedback === "duplicate") {
+      toast({
+        title: "Viagem já adicionada",
+        description: "Você já demonstrou interesse por esse pacote."
+      });
+    }
+
+    if (feedback === "added") {
+      toast({
+        title: "Viagem adicionada",
+        description: "Essa viagem foi adicionada às suas viagens de interesse."
+      });
     }
   };
 
@@ -397,9 +479,10 @@ const Viagens = () => {
                       </div>
                     </div>
                     
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       className="w-full bg-gradient-brasil hover:opacity-90"
+                      onClick={() => handlePackageInterest(trip)}
                     >
                       Tenho Interesse
                     </Button>
