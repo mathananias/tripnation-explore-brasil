@@ -3,11 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Star, Filter, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AvaliacaoModal from "@/components/AvaliacaoModal";
 import SEO from "@/components/SEO";
+import placeholderSvg from "@/assets/placeholder.svg";
+import surfAtoba from "@/assets/surf-praia-atoba.jpg";
+import escalaChapada from "@/assets/escalada-chapada.jpg";
 
 const mockReviews = [
   {
@@ -15,20 +19,20 @@ const mockReviews = [
     user: {
       name: "Camila P.",
       location: "SP",
-      avatar: "/placeholder.svg"
+      avatar: placeholderSvg
     },
     destination: "Trilha do Pico do Horizonte",
     rating: 5,
     comment: "Passeio incrível, guia muito atencioso",
     date: "15 Jan 2024",
-    images: ["/placeholder.svg"]
+    images: [placeholderSvg]
   },
   {
     id: 2,
     user: {
       name: "Pedro H.",
       location: "RJ",
-      avatar: "/placeholder.svg"
+      avatar: placeholderSvg
     },
     destination: "Cachoeira das Águas Claras",
     rating: 4,
@@ -41,26 +45,26 @@ const mockReviews = [
     user: {
       name: "Ana Clara M.",
       location: "MG",
-      avatar: "/placeholder.svg"
+      avatar: placeholderSvg
     },
     destination: "Surf na Praia do Atobá",
     rating: 5,
     comment: "Experiência única! As ondas estavam perfeitas e o instrutor foi excepcional. Recomendo muito para quem quer aprender ou aperfeiçoar o surf.",
     date: "8 Jan 2024",
-    images: ["/placeholder.svg", "/placeholder.svg"]
+    images: [surfAtoba, placeholderSvg]
   },
   {
     id: 4,
     user: {
       name: "Lucas R.",
       location: "RS",
-      avatar: "/placeholder.svg"
+      avatar: placeholderSvg
     },
     destination: "Escalada na Chapada Encantada",
     rating: 4,
     comment: "Vista espetacular no topo! Equipamentos de segurança em perfeito estado.",
     date: "5 Jan 2024",
-    images: ["/placeholder.svg"]
+    images: [escalaChapada]
   }
 ];
 
@@ -156,11 +160,12 @@ const Avaliacoes = () => {
                   {review.images.length > 0 && (
                     <div className="flex space-x-2">
                       {review.images.map((image, index) => (
-                        <img
+                        <OptimizedImage
                           key={index}
                           src={image}
                           alt={`Foto ${index + 1} da avaliação`}
                           className="w-20 h-20 object-cover rounded-lg border"
+                          lazy={true}
                         />
                       ))}
                     </div>

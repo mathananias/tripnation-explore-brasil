@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Star, Upload, X } from "lucide-react";
+import placeholderSvg from "@/assets/placeholder.svg";
 
 interface AvaliacaoModalProps {
   isOpen: boolean;
@@ -49,7 +51,7 @@ const AvaliacaoModal = ({ isOpen, onOpenChange }: AvaliacaoModalProps) => {
 
   const simulateFileUpload = () => {
     // Simular upload de arquivo
-    const mockFile = `/placeholder.svg?${Date.now()}`;
+    const mockFile = `${placeholderSvg}?${Date.now()}`;
     setUploadedFiles([...uploadedFiles, mockFile]);
   };
 
@@ -117,10 +119,11 @@ const AvaliacaoModal = ({ isOpen, onOpenChange }: AvaliacaoModalProps) => {
                 <div className="grid grid-cols-3 gap-2 mt-3">
                   {uploadedFiles.map((file, index) => (
                     <div key={index} className="relative">
-                      <img
+                      <OptimizedImage
                         src={file}
                         alt={`Upload ${index + 1}`}
                         className="w-full h-20 object-cover rounded-lg border"
+                        lazy={false}
                       />
                       <Button
                         size="sm"
