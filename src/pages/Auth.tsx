@@ -67,7 +67,10 @@ const Auth = () => {
   // Auto-preencher Rua quando CEP tiver 8 dígitos
   useEffect(() => {
     const raw = onlyDigits(cep);
-    if (raw.length !== 8) return;
+    if (raw.length !== 8) {
+      setLoadingCEP(false);
+      return;
+    }
     let cancelled = false;
 
     (async () => {
@@ -88,6 +91,7 @@ const Auth = () => {
 
     return () => {
       cancelled = true;
+      setLoadingCEP(false);
     };
   }, [cep]);
 
