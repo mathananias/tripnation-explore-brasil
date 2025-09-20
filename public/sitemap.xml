@@ -3,7 +3,6 @@
   <url><loc>{BASE_URL}/</loc></url>
   <url><loc>{BASE_URL}/viagens</loc></url>
   <url><loc>{BASE_URL}/comunidade</loc></url>
-  <url><loc>{BASE_URL}/avaliacoes</loc></url>
   <url><loc>{BASE_URL}/chat</loc></url>
   <url><loc>{BASE_URL}/perfil</loc></url>
   <url><loc>{BASE_URL}/sobre</loc></url>
