@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { Heart, MessageCircle, Share2, PlayCircle, Star } from "lucide-react";
+import { Heart, MessageCircle, Share2, PlayCircle, Star, Plus } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import amanhecerSerraImage from "@/assets/amanhecer-serra-estrelas.jpg";
@@ -232,19 +232,27 @@ const Comunidade = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-laranja to-amarelo bg-clip-text text-transparent mb-4">
-              Comunidade TripNation
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Compartilhe suas aventuras e inspire outros viajantes
-            </p>
-            {hasTripFilter && (
-              <p className="mt-3 text-sm text-muted-foreground">
-                Mostrando conteúdos relacionados a
-                <Badge className="ml-2">{tripFilter}</Badge>
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-8">
+            <div className="text-center md:text-left">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-laranja to-amarelo bg-clip-text text-transparent mb-4">
+                Comunidade TripNation
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Compartilhe suas aventuras e inspire outros viajantes
               </p>
-            )}
+              {hasTripFilter && (
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Mostrando conteúdos relacionados a
+                  <Badge className="ml-2">{tripFilter}</Badge>
+                </p>
+              )}
+            </div>
+            <div className="flex justify-center md:justify-end">
+              <Button className="bg-gradient-brasil hover:opacity-90 transition-opacity md:self-start">
+                <Plus className="h-5 w-5 mr-2" />
+                Criar Post
+              </Button>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-4 mb-6">
