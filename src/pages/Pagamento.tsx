@@ -12,7 +12,15 @@ import {
   RadioGroup,
   RadioGroupItem
 } from "@/components/ui/radio-group";
-import { packagedTrips, PackagedTrip, UserTrip } from "./Viagens";
+import {
+  packagedTrips,
+  PackagedTrip,
+  TripPricing,
+  UserTrip,
+  calculateServiceFeeAmount,
+  calculateTotalAmount,
+  formatPricingValue
+} from "./Viagens";
 
 type CheckoutState = {
   tripId?: number;
@@ -21,6 +29,22 @@ type CheckoutState = {
 
 const isPackagedTrip = (trip: UserTrip | PackagedTrip): trip is PackagedTrip => {
   return (trip as PackagedTrip).partnerships !== undefined;
+};
+
+const parseCurrencyToNumber = (value?: string | null) => {
+  if (!value) {
+    return null;
+  }
+
+  const normalized = value
+    .toString()
+    .replace(/[^0-9.,-]/g, "")
+    .replace(/\.(?=\d{3}(?:\D|$))/g, "")
+    .replace(/,/g, ".");
+
+  const parsed = Number.parseFloat(normalized);
+
+  return Number.isNaN(parsed) ? null : parsed;
 };
 
 const Pagamento = () => {
@@ -53,13 +77,44 @@ const Pagamento = () => {
       : `${trip.startDate} - ${trip.endDate}`
     : "";
 
-  const tripPrice = trip
-    ? isPackagedTrip(trip)
-      ? trip.price
-      : trip.budget
-    : "";
-
   const participantCount = trip && "people" in trip ? trip.people : 1;
+
+  const pricingDetails = useMemo<TripPricing | null>(() => {
+    if (!trip) {
+      return null;
+    }
+
+    const sourcePricing = isPackagedTrip(trip) ? trip.pricing : trip.pricing;
+
+    let basePrice = sourcePricing.basePrice;
+    let transportCost = sourcePricing.transportCost;
+    let extras = sourcePricing.extras;
+    const serviceFeePercent = sourcePricing.serviceFeePercent ?? 8;
+
+    if (!isPackagedTrip(trip) && basePrice == null) {
+      const parsedBudget = parseCurrencyToNumber(trip.budget);
+      if (parsedBudget != null) {
+        basePrice = parsedBudget;
+      }
+    }
+
+    return {
+      basePrice,
+      transportCost,
+      extras,
+      serviceFeePercent
+    };
+  }, [trip]);
+
+  const serviceFeeAmount = pricingDetails ? calculateServiceFeeAmount(pricingDetails) : null;
+  const totalAmount = pricingDetails ? calculateTotalAmount(pricingDetails) : null;
+  const serviceFeePercentLabel = pricingDetails?.serviceFeePercent ?? 8;
+  const serviceFeePercentDisplay = `${serviceFeePercentLabel.toString().replace(".", ",")}%`;
+  const basePriceDisplay = formatPricingValue(pricingDetails?.basePrice);
+  const transportDisplay = formatPricingValue(pricingDetails?.transportCost);
+  const extrasDisplay = formatPricingValue(pricingDetails?.extras);
+  const serviceFeeDisplay = formatPricingValue(serviceFeeAmount);
+  const totalDisplay = formatPricingValue(totalAmount);
 
   return (
     <div className="min-h-screen bg-background">
@@ -211,40 +266,70 @@ const Pagamento = () => {
                   <CardHeader>
                     <CardTitle className="text-xl text-foreground">Resumo da viagem</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4 text-sm text-muted-foreground">
-                    <div className="flex items-center justify-between text-foreground">
-                      <span className="font-medium">Viagem</span>
-                      <span>{tripTitle}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Período</span>
-                      <span>{tripPeriod}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Participantes</span>
-                      <span>{participantCount} pessoa(s)</span>
-                    </div>
-                    {"notes" in trip && trip.notes ? (
-                      <div>
-                        <p className="font-medium text-foreground">Observações</p>
-                        <p>{trip.notes}</p>
+                  <CardContent className="space-y-5 text-sm text-muted-foreground">
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-foreground">
+                        <span className="font-medium">Viagem</span>
+                        <span className="text-right">{tripTitle}</span>
                       </div>
-                    ) : null}
-                    {isPackagedTrip(trip) ? (
-                      <div className="space-y-2">
-                        <p className="font-medium text-foreground">Parcerias incluídas</p>
-                        <ul className="list-disc list-inside space-y-1">
-                          <li>Transporte: {trip.partnerships.transport}</li>
-                          <li>Hospedagem: {trip.partnerships.accommodation}</li>
-                          <li>
-                            Restaurante: {trip.partnerships.restaurant.name} ({trip.partnerships.restaurant.discount})
-                          </li>
-                        </ul>
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span>Período</span>
+                        <span className="text-right">{tripPeriod || "A confirmar"}</span>
                       </div>
-                    ) : null}
-                    <div className="flex items-center justify-between pt-2 text-base font-semibold text-foreground">
-                      <span>Total</span>
-                      <span>{tripPrice}</span>
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span>Participantes</span>
+                        <span className="text-right">{participantCount} pessoa(s)</span>
+                      </div>
+                      {"notes" in trip && trip.notes ? (
+                        <div className="rounded-md bg-muted/40 p-3 text-foreground">
+                          <p className="font-medium">Observações</p>
+                          <p className="text-sm leading-relaxed">{trip.notes}</p>
+                        </div>
+                      ) : null}
+                      {isPackagedTrip(trip) ? (
+                        <div className="rounded-md bg-muted/40 p-3 text-foreground">
+                          <p className="font-medium">Parcerias incluídas</p>
+                          <ul className="mt-2 list-disc list-inside space-y-1 text-sm">
+                            <li>Transporte: {trip.partnerships.transport}</li>
+                            <li>Hospedagem: {trip.partnerships.accommodation}</li>
+                            <li>
+                              Restaurante: {trip.partnerships.restaurant.name} ({trip.partnerships.restaurant.discount})
+                            </li>
+                          </ul>
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="space-y-3 rounded-lg border border-dashed border-muted-foreground/40 p-4 text-foreground">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                          Detalhamento financeiro
+                        </span>
+                        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                          {serviceFeePercentDisplay}
+                        </span>
+                      </div>
+                      <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+                        <div className="flex items-center justify-between rounded-md bg-muted/60 p-3">
+                          <dt className="text-muted-foreground">Custo base</dt>
+                          <dd className="font-medium text-foreground">{basePriceDisplay}</dd>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md bg-muted/60 p-3">
+                          <dt className="text-muted-foreground">Transporte</dt>
+                          <dd className="font-medium text-foreground">{transportDisplay}</dd>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md bg-muted/60 p-3">
+                          <dt className="text-muted-foreground">Custos extras</dt>
+                          <dd className="font-medium text-foreground">{extrasDisplay}</dd>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md bg-muted/60 p-3">
+                          <dt className="text-muted-foreground">Taxa de serviço</dt>
+                          <dd className="font-medium text-foreground">{serviceFeeDisplay}</dd>
+                        </div>
+                      </dl>
+                      <div className="flex flex-col gap-1 rounded-md bg-primary/10 p-4 text-base font-semibold text-foreground sm:flex-row sm:items-center sm:justify-between">
+                        <span>Total estimado</span>
+                        <span>{totalDisplay}</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
