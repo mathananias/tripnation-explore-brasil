@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2 } from "lucide-react";
+import { Plus, Calendar, Users, DollarSign, MapPin, Star, Edit, Trash2, LifeBuoy } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import escaladaImage from "@/assets/escalada-chapada.jpg";
@@ -198,6 +198,7 @@ export type UserTrip = {
   endDate: string;
   budget: string;
   people: number;
+  needsGuide: boolean;
   notes: string;
   isOpen: boolean;
   interestedCount: number;
@@ -216,6 +217,7 @@ type NewTripState = {
   transportCost: string;
   extras: string;
   people: number;
+  needsGuide: boolean;
   notes: string;
   isOpen: boolean;
 };
@@ -249,6 +251,7 @@ const initialTripState: NewTripState = {
   transportCost: "",
   extras: "",
   people: 1,
+  needsGuide: false,
   notes: "",
   isOpen: true
 };
@@ -260,6 +263,7 @@ const packagedTripEditConfig: TripFormConfig = {
   basePrice: { disabled: true },
   transportCost: { disabled: true },
   extras: { disabled: true },
+  needsGuide: { disabled: true },
   isOpen: { disabled: true }
 };
 
@@ -296,6 +300,7 @@ const TripFormDialog = ({
   const transportCostField = getFieldConfig("transportCost");
   const extrasField = getFieldConfig("extras");
   const peopleField = getFieldConfig("people");
+  const needsGuideField = getFieldConfig("needsGuide");
   const notesField = getFieldConfig("notes");
   const groupTypeField = getFieldConfig("isOpen");
 
@@ -449,6 +454,31 @@ const TripFormDialog = ({
                 />
               </div>
             ) : null}
+            {!needsGuideField.hidden ? (
+              <div>
+                <Label>Necessidade de Guia</Label>
+                <div className="flex space-x-4 mt-2">
+                  <Button
+                    type="button"
+                    variant={trip.needsGuide ? "default" : "outline"}
+                    onClick={() => onTripChange({ ...trip, needsGuide: true })}
+                    className="flex-1"
+                    disabled={needsGuideField.disabled}
+                  >
+                    Sim
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={!trip.needsGuide ? "default" : "outline"}
+                    onClick={() => onTripChange({ ...trip, needsGuide: false })}
+                    className="flex-1"
+                    disabled={needsGuideField.disabled}
+                  >
+                    Não
+                  </Button>
+                </div>
+              </div>
+            ) : null}
           </div>
           {!notesField.hidden ? (
             <div>
@@ -584,6 +614,7 @@ const Viagens = () => {
           endDate: newTrip.endDate,
           budget: budgetLabel,
           people: newTrip.people,
+          needsGuide: newTrip.needsGuide,
           notes: newTrip.notes,
           isOpen: newTrip.isOpen,
           interestedCount: 0,
@@ -607,6 +638,7 @@ const Viagens = () => {
       transportCost: formatPricingForInput(trip.pricing.transportCost),
       extras: formatPricingForInput(trip.pricing.extras),
       people: trip.people,
+      needsGuide: trip.needsGuide,
       notes: trip.notes,
       isOpen: trip.isOpen
     });
@@ -644,6 +676,7 @@ const Viagens = () => {
                 endDate: editTripForm.endDate,
                 budget: budgetLabel,
                 people: editTripForm.people,
+                needsGuide: editTripForm.needsGuide,
                 notes: editTripForm.notes,
                 isOpen: editTripForm.isOpen,
                 pricing
@@ -676,6 +709,7 @@ const Viagens = () => {
       endDate: formatDate(endDate),
       budget: budgetLabel,
       people: 1,
+      needsGuide: Boolean(trip.guideId),
       notes: trip.description,
       isOpen: true,
       interestedCount: 1,
@@ -820,15 +854,19 @@ const Viagens = () => {
                                   <Calendar className="h-4 w-4" />
                                   <span>{trip.startDate} - {trip.endDate}</span>
                                 </div>
-                              <div className="flex items-center space-x-1">
-                                <DollarSign className="h-4 w-4" />
-                                <span>{trip.budget}</span>
+                                <div className="flex items-center space-x-1">
+                                  <DollarSign className="h-4 w-4" />
+                                  <span>{trip.budget}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Users className="h-4 w-4" />
+                                  <span>{trip.people} pessoas</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <LifeBuoy className="h-4 w-4" />
+                                  <span>{trip.needsGuide ? "Guia necessário" : "Guia opcional"}</span>
+                                </div>
                               </div>
-                              <div className="flex items-center space-x-1">
-                                <Users className="h-4 w-4" />
-                                <span>{trip.people} pessoas</span>
-                              </div>
-                            </div>
                             {trip.notes && (
                               <p className="mt-2 text-sm text-muted-foreground">{trip.notes}</p>
                             )}
