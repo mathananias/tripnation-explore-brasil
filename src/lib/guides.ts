@@ -29,8 +29,8 @@ export const guides: Guide[] = [
     photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80"
   },
   {
-    id: "luana",
-    name: "Luana Ribeiro",
+    id: "Roberto",
+    name: "Roberto Ribeiro",
     location: "Florianópolis, SC",
     description: "Instrutora de surf e trilhas costeiras com foco em experiências sustentáveis.",
     photo: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=256&q=80"
