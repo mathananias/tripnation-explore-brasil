@@ -301,7 +301,7 @@ const Comunidade = () => {
       <SEO title="Comunidade | TripNation" description="Veja posts e conecte-se com aventureiros pelo Brasil." />
       <Header />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pt-24 pb-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-8">
             <div className="text-center md:text-left md:flex-1">

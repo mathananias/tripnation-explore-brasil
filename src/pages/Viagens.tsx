@@ -745,7 +745,7 @@ const Viagens = () => {
       <SEO title="Viagens | TripNation" description="Explore pacotes e crie suas próprias viagens pelo Brasil." />
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pt-24 pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold bg-gradient-brasil bg-clip-text text-transparent mb-4">
