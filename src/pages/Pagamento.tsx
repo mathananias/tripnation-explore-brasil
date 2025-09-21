@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,6 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import {
   RadioGroup,
   RadioGroupItem
@@ -21,6 +30,7 @@ import {
   calculateTotalAmount,
   formatPricingValue
 } from "./Viagens";
+import { Medal } from "lucide-react";
 
 type CheckoutState = {
   tripId?: number;
@@ -52,6 +62,8 @@ const Pagamento = () => {
   const navigate = useNavigate();
 
   const state = (location.state as CheckoutState | null) ?? {};
+
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const trip = useMemo(() => {
     if (state.trip) {
@@ -244,9 +256,33 @@ const Pagamento = () => {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-gradient-brasil hover:opacity-90">
+                    <Button
+                      className="w-full bg-gradient-brasil hover:opacity-90"
+                      onClick={() => setShowConfirmation(true)}
+                    >
                       Confirmar pagamento
                     </Button>
+                    <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader className="space-y-3 text-center">
+                          <Badge className="mx-auto flex items-center gap-2 px-4 py-2 text-base">
+                            <Medal className="h-4 w-4" /> Conquista desbloqueada
+                          </Badge>
+                          <DialogTitle className="text-2xl font-semibold text-foreground">
+                            Se prepare para sua primeira jornada incrível com a TripNation
+                          </DialogTitle>
+                          <DialogDescription className="text-muted-foreground">
+                            Obrigado por confiar na TripNation! Em instantes você receberá um e-mail com todas as
+                            orientações para a viagem dos seus sonhos.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter className="justify-center">
+                          <Button variant="outline" onClick={() => setShowConfirmation(false)}>
+                            Fechar
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </CardContent>
                 </Card>
               </div>
