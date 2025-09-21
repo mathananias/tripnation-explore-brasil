@@ -19,7 +19,7 @@ export const guides: Guide[] = [
     name: "Mariana Castro",
     location: "Lençóis, BA",
     description: "Conhecedora das trilhas da Chapada Diamantina e apaixonada por fotografia.",
-    photo: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=500&h=500&fit=crop&crop=faces"
+    photo: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=256&q=80"
   },
   {
     id: "carlos",
