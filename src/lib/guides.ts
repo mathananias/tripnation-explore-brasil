@@ -23,10 +23,10 @@ export const guides: Guide[] = [
   },
   {
     id: "carlos",
-    name: "Carla Pereira",
+    name: "Carlos Pereira",
     location: "Bonito, MS",
-    description: "Mergulhadora certificada que guia roteiros de ecoturismo e rios cristalinos.",
-    photo: "https://images.unsplash.com/photo-1494790108755-2616b612b742?auto=format&fit=crop&w=256&q=80"
+    description: "Mergulhador certificado que guia roteiros de ecoturismo e rios cristalinos.",
+    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80"
   },
   {
     id: "luana",
