@@ -8,7 +8,7 @@ export type Guide = {
 
 export const guides: Guide[] = [
   {
-    id: "joao",
+    id: "Maria",
     name: "Maria Silva",
     location: "Manaus, AM",
     description: "Especialista em expedições pela floresta amazônica e culturas ribeirinhas.",
@@ -19,7 +19,7 @@ export const guides: Guide[] = [
     name: "Mariana Castro",
     location: "Lençóis, BA",
     description: "Conhecedora das trilhas da Chapada Diamantina e apaixonada por fotografia.",
-    photo: "https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?auto=format&fit=crop&w=256&q=80"
+    photo: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=500&h=500&fit=crop&crop=faces"
   },
   {
     id: "carlos",
