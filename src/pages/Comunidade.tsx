@@ -74,7 +74,7 @@ const communityPosts: CommunityPost[] = [
     type: "comunidade",
     id: 1,
     user: {
-      name: "Marcos S.",
+      name: "João R.",
       location: "RJ"
     },
     content: "Uma das melhores experiências da minha vida",
@@ -89,7 +89,7 @@ const communityPosts: CommunityPost[] = [
     type: "comunidade",
     id: 2,
     user: {
-      name: "Edinaldo S.",
+      name: "Marina S.",
       location: "SP"
     },
     content: "Ondas perfeitas e muita energia boa",
@@ -133,7 +133,7 @@ const mockReviews: ReviewItem[] = [
     type: "avaliacao",
     id: 2,
     user: {
-      name: "Pietra H.",
+      name: "Pedro H.",
       location: "RJ"
     },
     destination: "Cachoeira das Águas Claras",
