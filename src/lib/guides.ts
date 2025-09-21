@@ -19,7 +19,7 @@ export const guides: Guide[] = [
     name: "Mariana Castro",
     location: "Lençóis, BA",
     description: "Conhecedora das trilhas da Chapada Diamantina e apaixonada por fotografia.",
-    photo: "https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?auto=format&fit=crop&w=256&q=80"
+    photo: "https://avatars.dicebear.com/api/avataaars/mariana-castro.svg"
   },
   {
     id: "carlos",
@@ -33,6 +33,6 @@ export const guides: Guide[] = [
     name: "Luana Ribeiro",
     location: "Florianópolis, SC",
     description: "Instrutora de surf e trilhas costeiras com foco em experiências sustentáveis.",
-    photo: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=256&q=80"
+    photo: "https://avatars.dicebear.com/api/avataaars/luana-ribeiro.svg"
   }
 ];
