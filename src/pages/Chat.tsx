@@ -88,7 +88,7 @@ const Chat = () => {
       <SEO title="Chat | TripNation" description="Converse com outros aventureiros em tempo real." />
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pt-24 pb-8">
         <div className="w-full max-w-[480px] mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-laranja to-amarelo bg-clip-text text-transparent mb-4">
