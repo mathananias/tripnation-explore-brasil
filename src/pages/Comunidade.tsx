@@ -28,7 +28,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import amanhecerSerraImage from "@/assets/amanhecer-serra-estrelas.jpg";
 import surfPraiaImage from "@/assets/surf-praia-atoba.jpg";
-import trilhaPicoHorizonte from "@/assets/trilha-pico-horizonte.svg";
+import picoDoHorizonteHero from "@/assets/pico-do-horizonte-hero";
 import escalaChapada from "@/assets/escalada-chapada.jpg";
 import SEO from "@/components/SEO";
 import { toast } from "@/hooks/use-toast";
@@ -127,7 +127,7 @@ const mockReviews: ReviewItem[] = [
     rating: 5,
     comment: "Passeio incrível, guia muito atencioso",
     date: "15 Jan 2024",
-    images: [trilhaPicoHorizonte]
+    images: [picoDoHorizonteHero]
   },
   {
     type: "avaliacao",
