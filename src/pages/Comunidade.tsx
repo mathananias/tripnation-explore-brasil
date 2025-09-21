@@ -74,7 +74,7 @@ const communityPosts: CommunityPost[] = [
     type: "comunidade",
     id: 1,
     user: {
-      name: "João R.",
+      name: "Marcos S.",
       location: "RJ"
     },
     content: "Uma das melhores experiências da minha vida",
