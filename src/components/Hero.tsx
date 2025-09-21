@@ -22,7 +22,8 @@ const Hero = () => {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Porque a{" "}
             <span className="bg-gradient-sunset bg-clip-text text-transparent">jornada</span>
-            {" "}fica melhor quando compartilhada!
+            {" "}fica melhor quando{" "}
+            <span className="bg-gradient-sunset bg-clip-text text-transparent">compartilhada!</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto leading-relaxed">
             Conecte-se a pessoas, destinos e aventuras inesquecíveis pelo Brasil. Nossa comunidade te espera.
