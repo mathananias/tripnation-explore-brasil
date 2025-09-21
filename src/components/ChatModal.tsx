@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send } from "lucide-react";
+import gustavo from "@/assets/gustavo-martinez.jpg";
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -56,10 +57,7 @@ const ChatModal = ({ isOpen, onOpenChange }: ChatModalProps) => {
         <DialogHeader className="p-4 border-b bg-gradient-brasil text-white">
           <div className="flex items-center space-x-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage
-                src="https://cdn.jsdelivr.net/gh/pixelastic/fakeface-svgs/svg/people/male-9.svg"
-                alt="Lucas"
-              />
+              <AvatarImage src={gustavo} alt="Lucas" />
               <AvatarFallback className="bg-white text-primary font-semibold">LC</AvatarFallback>
             </Avatar>
             <div>
