@@ -1,15 +1,15 @@
 import React from "react";
-import trilhaPicoHorizonteImage from "@/assets/trilha-pico-horizonte.svg";
+import picoDoHorizonteHero from "@/assets/pico-do-horizonte-hero";
 
 type Props = {
-  src?: string; // default: trilha-pico-horizonte.svg
+  src?: string; // default: pico do horizonte reviewer image
   alt?: string; // acessibilidade
   height?: number; // altura em px (ex.: 520)
   overlay?: boolean; // overlay suave opcional
   className?: string; // classes extras
 };
 
-const DEFAULT_IMAGE_SRC = trilhaPicoHorizonteImage;
+const DEFAULT_IMAGE_SRC = picoDoHorizonteHero;
 
 export default function PicoDoHorizonteHero({
   src = DEFAULT_IMAGE_SRC,
