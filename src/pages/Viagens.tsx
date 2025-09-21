@@ -164,7 +164,7 @@ const packagedTripEditConfig: TripFormConfig = {
   sport: { disabled: true },
   budget: { disabled: true },
   isOpen: { disabled: true },
-  needsGuide: { disabled: true }
+  needsGuide: { hidden: true }
 };
 
 const TripFormDialog = ({
@@ -607,8 +607,11 @@ const Viagens = () => {
                                 <h4 className="font-semibold text-lg text-foreground">{trip.destination}</h4>
                                 <Badge variant="secondary">{trip.sport}</Badge>
                                 {trip.needsGuide ? (
-                                  <Badge variant="outline" className="border-primary bg-primary/10 text-primary">
-                                    Guia solicitado
+                                  <Badge
+                                    variant={trip.guideId ? "default" : "outline"}
+                                    className={trip.guideId ? undefined : "border-primary bg-primary/10 text-primary"}
+                                  >
+                                    {trip.guideId ? "Guia confirmado" : "Guia solicitado"}
                                   </Badge>
                                 ) : null}
                               </div>
