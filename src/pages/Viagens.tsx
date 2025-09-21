@@ -28,12 +28,19 @@ type TripPartnership = {
   };
 };
 
+export type TripPricing = {
+  basePrice: number | null;
+  transportCost: number | null;
+  serviceFeePercent: number | null;
+  extras: number | null;
+};
+
 export type PackagedTrip = {
   id: number;
   slug: string;
   title: string;
   duration: string;
-  price: string;
+  pricing: TripPricing;
   description: string;
   image: string;
   rating: number;
@@ -49,7 +56,12 @@ export const packagedTrips: PackagedTrip[] = [
     slug: "serra-das-estrelas",
     title: "Trilha na Serra das Estrelas",
     duration: "3 dias",
-    price: "R$ 1.200",
+    pricing: {
+      basePrice: 850,
+      transportCost: 180,
+      serviceFeePercent: 8,
+      extras: 80
+    },
     description: "Inclui guia e hospedagem simples",
     image: escaladaImage,
     rating: 4.8,
@@ -67,7 +79,12 @@ export const packagedTrips: PackagedTrip[] = [
     slug: "praia-do-atoba",
     title: "Surf na Praia do Atobá",
     duration: "5 dias",
-    price: "R$ 2.500",
+    pricing: {
+      basePrice: 1800,
+      transportCost: 300,
+      serviceFeePercent: 8,
+      extras: 200
+    },
     description: "Inclui aulas de surf e hospedagem frente-mar",
     image: surfImage,
     rating: 4.9,
@@ -85,7 +102,12 @@ export const packagedTrips: PackagedTrip[] = [
     slug: "vale-encantado",
     title: "Ciclismo no Vale Encantado",
     duration: "2 dias",
-    price: "R$ 900",
+    pricing: {
+      basePrice: 600,
+      transportCost: 150,
+      serviceFeePercent: 8,
+      extras: 90
+    },
     description: "Inclui aluguel de bike e camping",
     image: bikeImage,
     rating: 4.7,
@@ -98,6 +120,74 @@ export const packagedTrips: PackagedTrip[] = [
     }
   }
 ];
+
+export const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL"
+});
+
+const DEFAULT_SERVICE_FEE_PERCENT = 8;
+
+export const calculateSubtotalAmount = (pricing: TripPricing): number | null => {
+  const hasAnyValue =
+    pricing.basePrice != null || pricing.transportCost != null || pricing.extras != null;
+
+  if (!hasAnyValue) {
+    return null;
+  }
+
+  return (
+    (pricing.basePrice ?? 0) + (pricing.transportCost ?? 0) + (pricing.extras ?? 0)
+  );
+};
+
+export const calculateServiceFeeAmount = (pricing: TripPricing): number | null => {
+  const subtotal = calculateSubtotalAmount(pricing);
+
+  if (subtotal == null) {
+    return null;
+  }
+
+  const percent = pricing.serviceFeePercent ?? DEFAULT_SERVICE_FEE_PERCENT;
+
+  return subtotal * (percent / 100);
+};
+
+export const calculateTotalAmount = (pricing: TripPricing): number | null => {
+  const subtotal = calculateSubtotalAmount(pricing);
+
+  if (subtotal == null) {
+    return null;
+  }
+
+  const serviceFee = calculateServiceFeeAmount(pricing) ?? 0;
+
+  return subtotal + serviceFee;
+};
+
+export const formatPricingValue = (value: number | null | undefined) => {
+  if (value == null) {
+    return "A confirmar";
+  }
+
+  return currencyFormatter.format(value);
+};
+
+const parseCurrencyToNumber = (value: string): number | null => {
+  if (!value) {
+    return null;
+  }
+
+  const normalized = value
+    .toString()
+    .replace(/[^0-9.,-]/g, "")
+    .replace(/\.(?=\d{3}(?:\D|$))/g, "")
+    .replace(/,/g, ".");
+
+  const parsed = Number.parseFloat(normalized);
+
+  return Number.isNaN(parsed) ? null : parsed;
+};
 
 export type UserTrip = {
   id: number;
@@ -113,6 +203,7 @@ export type UserTrip = {
   interestedCount: number;
   packageId?: number;
   guideId?: string;
+  pricing: TripPricing;
 };
 
 type NewTripState = {
@@ -121,6 +212,9 @@ type NewTripState = {
   startDate: string;
   endDate: string;
   budget: string;
+  basePrice: string;
+  transportCost: string;
+  extras: string;
   people: number;
   notes: string;
   isOpen: boolean;
@@ -151,6 +245,9 @@ const initialTripState: NewTripState = {
   startDate: "",
   endDate: "",
   budget: "",
+  basePrice: "",
+  transportCost: "",
+  extras: "",
   people: 1,
   notes: "",
   isOpen: true
@@ -160,6 +257,9 @@ const packagedTripEditConfig: TripFormConfig = {
   destination: { disabled: true },
   sport: { disabled: true },
   budget: { disabled: true },
+  basePrice: { disabled: true },
+  transportCost: { disabled: true },
+  extras: { disabled: true },
   isOpen: { disabled: true }
 };
 
@@ -192,6 +292,9 @@ const TripFormDialog = ({
   const startDateField = getFieldConfig("startDate");
   const endDateField = getFieldConfig("endDate");
   const budgetField = getFieldConfig("budget");
+  const basePriceField = getFieldConfig("basePrice");
+  const transportCostField = getFieldConfig("transportCost");
+  const extrasField = getFieldConfig("extras");
   const peopleField = getFieldConfig("people");
   const notesField = getFieldConfig("notes");
   const groupTypeField = getFieldConfig("isOpen");
@@ -289,6 +392,50 @@ const TripFormDialog = ({
                 />
               </div>
             ) : null}
+            {!basePriceField.hidden ? (
+              <div>
+                <Label htmlFor="basePrice">Custo base</Label>
+                <Input
+                  id="basePrice"
+                  value={trip.basePrice}
+                  onChange={(e) =>
+                    onTripChange({ ...trip, basePrice: e.target.value })
+                  }
+                  placeholder="Ex: 1.200"
+                  disabled={basePriceField.disabled}
+                />
+              </div>
+            ) : null}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {!transportCostField.hidden ? (
+              <div>
+                <Label htmlFor="transportCost">Transporte</Label>
+                <Input
+                  id="transportCost"
+                  value={trip.transportCost}
+                  onChange={(e) =>
+                    onTripChange({ ...trip, transportCost: e.target.value })
+                  }
+                  placeholder="Ex: 300"
+                  disabled={transportCostField.disabled}
+                />
+              </div>
+            ) : null}
+            {!extrasField.hidden ? (
+              <div>
+                <Label htmlFor="extras">Custos extras</Label>
+                <Input
+                  id="extras"
+                  value={trip.extras}
+                  onChange={(e) => onTripChange({ ...trip, extras: e.target.value })}
+                  placeholder="Ex: 150"
+                  disabled={extrasField.disabled}
+                />
+              </div>
+            ) : null}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {!peopleField.hidden ? (
               <div>
                 <Label htmlFor="people">Número de Pessoas</Label>
@@ -385,15 +532,62 @@ const Viagens = () => {
   const selectedGuide = selectedPackage?.guideId
     ? guidesById[selectedPackage.guideId]
     : undefined;
+  const selectedPackagePriceLabel = selectedPackage
+    ? formatPricingValue(calculateTotalAmount(selectedPackage.pricing))
+    : "";
+
+  const buildPricingFromState = (
+    state: NewTripState,
+    currentPercent?: number | null
+  ): TripPricing => ({
+    basePrice: parseCurrencyToNumber(state.basePrice),
+    transportCost: parseCurrencyToNumber(state.transportCost),
+    extras: parseCurrencyToNumber(state.extras),
+    serviceFeePercent: currentPercent ?? DEFAULT_SERVICE_FEE_PERCENT
+  });
+
+  const deriveBudgetLabel = (state: NewTripState, pricing: TripPricing) => {
+    const budgetNumber = parseCurrencyToNumber(state.budget);
+    if (budgetNumber != null) {
+      return currencyFormatter.format(budgetNumber);
+    }
+
+    const totalAmount = calculateTotalAmount(pricing);
+
+    if (totalAmount != null) {
+      return currencyFormatter.format(totalAmount);
+    }
+
+    return "A confirmar";
+  };
+
+  const formatPricingForInput = (value: number | null) => {
+    if (value == null) {
+      return "";
+    }
+
+    return currencyFormatter.format(value);
+  };
 
   const handleCreateTrip = () => {
     if (newTrip.destination && newTrip.sport && newTrip.startDate && newTrip.endDate) {
+      const pricing = buildPricingFromState(newTrip);
+      const budgetLabel = deriveBudgetLabel(newTrip, pricing);
+
       setUserTrips(prevTrips => [
         ...prevTrips,
         {
-          ...newTrip,
           id: Date.now(),
-          interestedCount: 0
+          destination: newTrip.destination,
+          sport: newTrip.sport,
+          startDate: newTrip.startDate,
+          endDate: newTrip.endDate,
+          budget: budgetLabel,
+          people: newTrip.people,
+          notes: newTrip.notes,
+          isOpen: newTrip.isOpen,
+          interestedCount: 0,
+          pricing
         }
       ]);
       setNewTrip(initialTripState);
@@ -409,6 +603,9 @@ const Viagens = () => {
       startDate: trip.startDate,
       endDate: trip.endDate,
       budget: trip.budget,
+      basePrice: formatPricingForInput(trip.pricing.basePrice),
+      transportCost: formatPricingForInput(trip.pricing.transportCost),
+      extras: formatPricingForInput(trip.pricing.extras),
       people: trip.people,
       notes: trip.notes,
       isOpen: trip.isOpen
@@ -433,12 +630,23 @@ const Viagens = () => {
       editTripForm.startDate &&
       editTripForm.endDate
     ) {
+      const pricing = buildPricingFromState(editTripForm, editingTrip.pricing.serviceFeePercent);
+      const budgetLabel = deriveBudgetLabel(editTripForm, pricing);
+
       setUserTrips(prevTrips =>
         prevTrips.map(trip =>
           trip.id === editingTrip.id
             ? {
                 ...trip,
-                ...editTripForm
+                destination: editTripForm.destination,
+                sport: editTripForm.sport,
+                startDate: editTripForm.startDate,
+                endDate: editTripForm.endDate,
+                budget: budgetLabel,
+                people: editTripForm.people,
+                notes: editTripForm.notes,
+                isOpen: editTripForm.isOpen,
+                pricing
               }
             : trip
         )
@@ -456,20 +664,25 @@ const Viagens = () => {
 
     const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
+    const pricing = { ...trip.pricing };
+    const totalAmount = calculateTotalAmount(pricing);
+    const budgetLabel = formatPricingValue(totalAmount);
+
     const createdTrip: UserTrip = {
       id: Date.now(),
       destination: trip.title,
       sport: trip.sport,
       startDate: formatDate(startDate),
       endDate: formatDate(endDate),
-      budget: trip.price,
+      budget: budgetLabel,
       people: 1,
       notes: trip.description,
       isOpen: true,
       interestedCount: 1,
       packageId: trip.id,
       slug: trip.slug,
-      guideId: trip.guideId
+      guideId: trip.guideId,
+      pricing
     };
 
     let feedback: "duplicate" | "added" | null = null;
@@ -703,6 +916,8 @@ const Viagens = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {packagedTrips.map(trip => {
                 const guide = trip.guideId ? guidesById[trip.guideId] : undefined;
+                const totalAmount = calculateTotalAmount(trip.pricing);
+                const displayPrice = formatPricingValue(totalAmount);
 
                 return (
                   <Card key={trip.id} className="overflow-hidden hover:shadow-primary transition-shadow duration-300 group">
@@ -719,7 +934,7 @@ const Viagens = () => {
                     </div>
                     <div className="absolute top-3 left-3">
                       <Badge className="bg-accent">
-                        {trip.price}
+                        {displayPrice}
                       </Badge>
                     </div>
                   </div>
@@ -852,7 +1067,7 @@ const Viagens = () => {
                       </Badge>
                     </div>
                     <div className="absolute top-3 left-3">
-                      <Badge className="bg-accent">{selectedPackage.price}</Badge>
+                      <Badge className="bg-accent">{selectedPackagePriceLabel}</Badge>
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
